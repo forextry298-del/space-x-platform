@@ -1,0 +1,39 @@
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#02070c;color:#f7f8fa}body{font-family:Georgia,"Times New Roman",serif}.page-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px 12px;background:linear-gradient(180deg,rgba(1,8,15,.25),rgba(1,5,10,.82)),url("../images/rocket-background.jpg") center center/100% 100% scroll no-repeat}.auth-panel{width:min(100%,390px);padding:24px 17px 21px;border-radius:20px;background:rgba(0,0,0,.78);backdrop-filter:blur(3px)}.brand{display:block;text-align:center;margin:0 0 21px;color:#c9dfed;font-size:14px;font-weight:bold;letter-spacing:6px;text-decoration:none}h1{text-align:center;font-size:35px;line-height:1.1;margin:0 0 7px}.subtitle{text-align:center;color:#aab5bf;font:12px/1.5 Arial,sans-serif;margin:0 0 25px}.auth-form{display:flex;flex-direction:column;gap:14px}.field{display:flex;align-items:center;gap:11px;min-width:0;min-height:59px;padding:0 15px;border:1.5px solid #c5c5c5;border-radius:18px;background:rgba(0,0,0,.78)}.field:focus-within{border-color:#c9dfed}.field-icon{color:#d3d9df;font:20px Arial,sans-serif}.field input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:white;font:15px Georgia,serif}.field input::placeholder{color:#858585;opacity:1}.primary-button{width:100%;min-height:59px;margin-top:4px;border:2px solid #c9dfed;border-radius:18px;background:#596b35;color:white;font:20px Georgia,serif;cursor:pointer}.primary-button:active{background:#748a47}.auth-switch{text-align:center;color:#d2d7dc;font:12px Arial,sans-serif;margin:21px 0 0}.auth-switch a{color:#c9dfed;text-decoration:none;font-weight:bold}.messages{font:12px Arial,sans-serif}.message{padding:9px;border-radius:9px;background:#222}.message.error{color:#ffbaba}.message.success{color:#d8f5bd}.notice{padding:14px;border:1px solid #c5c5c5;border-radius:14px;background:#0008;font:13px/1.5 Arial,sans-serif}.notice p{color:#aab5bf}.secondary-button{display:block;margin-top:16px;padding:12px;text-align:center;border-radius:14px;background:#596b35;color:white;text-decoration:none}@media(max-width:380px){.auth-panel{padding:21px 14px}.field{min-height:55px;padding:0 12px}.field input{font-size:14px}.primary-button{min-height:55px;font-size:19px}}
+.captcha-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 59px;
+  padding: 6px 8px 6px 15px;
+  border: 1.5px solid #c5c5c5;
+  border-radius: 18px;
+  background: rgba(0,0,0,.78);
+}
+.captcha-input {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+  font: 15px Georgia, serif;
+}
+.captcha-input::placeholder { color: #858585; }
+.captcha-code {
+  flex-shrink: 0;
+  padding: 12px 10px;
+  border-radius: 8px;
+  background: #fff;
+  color: #4784d7;
+  font: bold 22px Georgia, serif;
+  letter-spacing: 3px;
+}
+
+/* Space X: reduce the zoomed background appearance */
+.page-shell {
+  background-size: 100% 100%;
+  background-position: center center;
+  background-attachment: scroll;
+  background-repeat: no-repeat;
+}

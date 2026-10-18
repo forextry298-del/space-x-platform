@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Register | Space X{% endblock %}
+{% block content %}
+<h1>Welcome</h1>
+<p class="subtitle">Create your Space X account</p>
+
+<form method="post" class="auth-form">
+  <label class="field">
+    <span class="field-icon">▯</span>
+    <input name="phone" type="tel" placeholder="Phone Number" autocomplete="tel" required>
+  </label>
+
+  <label class="field">
+    <span class="field-icon">⚿</span>
+    <input name="password" type="password" placeholder="Set Password" minlength="8" required>
+  </label>
+
+  <label class="field">
+    <span class="field-icon">⚿</span>
+    <input name="confirm" type="password" placeholder="Confirm Password" minlength="8" required>
+  </label>
+
+  <div class="captcha-row">
+    <input class="captcha-input" name="captcha_input" placeholder="Verification code" required>
+    <span class="captcha-code">{{ real_captcha }}</span>
+  </div>
+  <input type="hidden" name="real_captcha" value="{{ real_captcha }}">
+
+  <label class="field">
+    <span class="field-icon">♧</span>
+    <input name="invite" value="{{ invite }}" placeholder="Invitation Code">
+  </label>
+
+  <button class="primary-button" type="submit">Register</button>
+</form>
+
+<p class="auth-switch">Already registered? <a href="{{ url_for('login') }}">Login</a></p>
+{% endblock %}

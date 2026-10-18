@@ -1,0 +1,1 @@
+# Space X starter\n\nMobile-first Flask registration, login and starter dashboard.\n\nRun with `pip install -r requirements.txt` then `python app.py`.\n\nBefore deployment set a strong SECRET_KEY. This starter is not affiliated with SpaceX and does not yet process investments, deposits or withdrawals. Use persistent database storage before supporting real users.\n
