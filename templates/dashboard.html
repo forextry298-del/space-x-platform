@@ -1,1 +1,69 @@
-{% extends "base.html" %}{% block title %}Dashboard | Space X{% endblock %}{% block content %}<h1>Dashboard</h1><p class="subtitle">Welcome, {{ phone }}</p><div class="notice"><strong>Your account is ready.</strong><p>This is a starter dashboard. Investment, deposit, withdrawal and admin features are not added yet.</p></div><a class="secondary-button" href="{{ url_for('logout') }}">Log out</a>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Home | Space X Investment{% endblock %}
+{% block content %}
+<div class="sx-dashboard">
+
+  <header class="sx-top">
+    <h1>AI Machine</h1>
+    <a class="sx-message-link" href="#messages">
+      <span>🔔</span><small>Message</small>
+    </a>
+  </header>
+
+  <div class="sx-ticker" aria-label="Platform activity">
+    <div class="sx-ticker-track">
+      <span>🚀 SPACE X INVESTMENT — Welcome to your dashboard</span>
+      <span>💳 Deposit requests are subject to verification</span>
+      <span>📈 Check your investment activity and account updates</span>
+      <span>💬 Need help? Visit the Chats section</span>
+      <span>🚀 SPACE X INVESTMENT — Welcome to your dashboard</span>
+    </div>
+  </div>
+
+  <section class="sx-stats">
+    <a class="sx-stat" href="#deposit-details">
+      <strong>0.00 UGX</strong><span>Deposit details</span>
+    </a>
+    <a class="sx-stat" href="#withdraw-details">
+      <strong>0.00 UGX</strong><span>Withdraw details</span>
+    </a>
+    <a class="sx-stat" href="#income">
+      <strong>0.00 UGX</strong><span>AI Income</span>
+    </a>
+    <a class="sx-stat" href="#income">
+      <strong>0.00 UGX</strong><span>Today's earnings</span>
+    </a>
+  </section>
+
+  <section class="sx-team-stats">
+    <div><strong>0</strong><span>Invite Count</span></div>
+    <div><strong>0</strong><span>Team Count</span></div>
+    <div><strong>0.00 UGX</strong><span>Team income</span></div>
+  </section>
+
+  <section class="sx-actions">
+    <a href="#deposit-details" class="sx-deposit">Deposit</a>
+    <a href="#withdraw-details" class="sx-withdraw">Withdraw</a>
+  </section>
+
+  <section class="sx-message-panel" id="messages">
+    <header><strong>Message</strong><a href="#messages">More</a></header>
+    <div class="sx-message-body">
+      <p>Welcome to Space X Investment.</p>
+      <p>Account notices and verified platform updates will appear here.</p>
+    </div>
+  </section>
+
+  <a class="sx-support" href="mailto:support@example.com"
+     aria-label="Contact support">🎧</a>
+
+  <nav class="sx-bottom-nav" aria-label="Main navigation">
+    <a class="active" href="{{ url_for('dashboard') }}"><span>⌂</span><small>Home</small></a>
+    <a href="#messages"><span>●</span><small>Chats</small></a>
+    <a href="#ai"><span>♟</span><small>AI</small></a>
+    <a href="#income"><span>◉</span><small>Income</small></a>
+    <a href="{{ url_for('logout') }}"><span>♙</span><small>Log out</small></a>
+  </nav>
+
+</div>
+{% endblock %}

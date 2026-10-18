@@ -37,3 +37,98 @@
   background-attachment: scroll;
   background-repeat: no-repeat;
 }
+}
+.sx-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.sx-bottom-nav {
+  position: fixed;
+  z-index: 1000;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  padding: 8px 2px;
+  background: #000;
+  border-top: 1px solid #181818;
+}
+.sx-bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: white;
+  text-decoration: none;
+}
+.sx-bottom-nav a span { font-size: 24px; }
+.sx-bottom-nav a small { font-size: 10px; }
+.sx-bottom-nav a.active { color: #00a9fa; }
+
+/* Compact dashboard and reference-matched bottom navigation */
+.sx-dashboard {
+  max-width: 520px !important;
+  padding: 10px 10px 82px !important;
+  font-size: 12px !important;
+}
+.sx-top { margin-bottom: 12px !important; }
+.sx-top h1 { font-size: 20px !important; }
+.sx-message-link span { font-size: 24px !important; }
+.sx-ticker { padding: 13px 0 !important; margin-bottom: 10px !important; }
+.sx-stats, .sx-team-stats { gap: 8px !important; margin-bottom: 9px !important; }
+.sx-stat strong { padding: 9px 2px !important; font-size: 14px !important; }
+.sx-stat span { padding: 7px 2px !important; font-size: 11px !important; }
+.sx-team-stats strong { padding: 9px 1px !important; font-size: 13px !important; }
+.sx-team-stats span { padding: 7px 1px !important; font-size: 9px !important; }
+.sx-actions { gap: 9px !important; margin: 12px 0 !important; }
+.sx-actions a { padding: 13px 4px !important; font-size: 14px !important; }
+.sx-message-panel { min-height: 220px !important; }
+.sx-message-panel header { padding: 11px !important; }
+.sx-message-panel header strong { font-size: 16px !important; }
+.sx-message-body { padding: 10px !important; }
+.sx-support { width: 49px !important; height: 49px !important; bottom: 76px !important; font-size: 24px !important; }
+
+/* Five evenly spaced icons and labels, matching the reference */
+.sx-bottom-nav {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 66px !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  align-items: center !important;
+  padding: 5px 2px max(5px, env(safe-area-inset-bottom)) !important;
+  background: #000 !important;
+  border-top: 1px solid #111 !important;
+  z-index: 1000 !important;
+}
+.sx-bottom-nav a {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+.sx-bottom-nav a span {
+  display: block !important;
+  font-size: 23px !important;
+  line-height: 25px !important;
+}
+.sx-bottom-nav a small {
+  display: block !important;
+  font: 10px Arial, sans-serif !important;
+  white-space: nowrap !important;
+}
+.sx-bottom-nav a.active { color: #00a9fa !important; }
+
+/* Avoid ticker movement for visitors who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .sx-ticker-track { animation: none !important; }
+}
