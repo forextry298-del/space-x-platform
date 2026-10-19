@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Profile | Space X{% endblock %}
+{% block content %}
+<div class="sx-profile-page">
+  <section class="sx-profile-card sx-wallet">
+    <div><span>Wallet</span><strong>0.00 UGX</strong></div>
+    <div><span>Balance</span><strong>0.00 UGX</strong></div>
+    <b class="sx-wallet-mark">W</b>
+  </section>
+
+  <section class="sx-profile-card sx-profile-menu">
+    {% for item in [
+      ('▤','Deposit','#deposit'),
+      ('▧','Withdraw','#withdraw'),
+      ('▤','Transactions','#transactions'),
+      ('♧','Invite','#invite'),
+      ('♟','My team','#team'),
+      ('★','VIP Task','#vip'),
+      ('♔','Reward','#reward'),
+      ('☏','Manager','#manager'),
+      ('⚙','Settings','#settings')
+    ] %}
+    <a href="{{ item[2] }}" class="sx-profile-item">
+      <span class="sx-profile-icon">{{ item[0] }}</span>
+      <span>{{ item[1] }}</span>
+    </a>
+    {% endfor %}
+  </section>
+
+  <section class="sx-profile-card sx-salary">
+    <div><span>Last month's salary</span><strong>0.00 UGX</strong></div>
+    <div><span>This month's salary</span><strong>0.00 UGX</strong></div>
+    <a href="#salary">Get last month's salary</a>
+  </section>
+
+  <section class="sx-profile-card sx-salary">
+    <div><span>Invited last month</span><strong>0</strong></div>
+    <div><span>Invited this month</span><strong>0</strong></div>
+  </section>
+
+  <nav class="sx-bottom-nav" aria-label="Main navigation">
+    <a href="{{ url_for('dashboard') }}"><span class="sx-profile-nav-icon">⌂</span><small>Home</small></a>
+    <a href="{{ url_for('dashboard') }}#messages"><span class="sx-profile-nav-icon">●</span><small>Chats</small></a>
+    <a href="{{ url_for('dashboard') }}#ai"><span class="sx-profile-nav-icon">♟</span><small>AI</small></a>
+    <a href="{{ url_for('income') }}"><span class="sx-profile-nav-icon">▤</span><small>Income</small></a>
+    <a class="active" href="{{ url_for('profile') }}" aria-current="page"><span class="sx-profile-nav-icon">♟</span><small>Profile</small></a>
+  </nav>
+</div>
+{% endblock %}
