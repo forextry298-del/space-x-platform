@@ -33,7 +33,11 @@
       ('K series','K-5 MAX','3','804,400.00','337,848.00','x3')
     ] %}
     {% for series, name, days, price, daily, quantity in machines %}
-    <article class="sx-machine-card" data-machine-series="{{ series }}">
+    <article class="sx-machine-card"
+      data-machine-series="{{ series }}"
+      onclick="window.location.href='{{ url_for('machine_detail', machine_code=name) }}'"
+      role="link" tabindex="0"
+      onkeydown="if(event.key==='Enter'){window.location.href='{{ url_for('machine_detail', machine_code=name) }}'}">
       <div class="sx-machine-image">
         {% if name in ['VIP-1', 'VIP-1 PRO'] %}
         <img src="{{ url_for('static', filename='images/vip1-space-x.png') }}"

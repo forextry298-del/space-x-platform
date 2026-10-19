@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os, secrets, string
+from machine_catalog import MACHINE_CATALOG
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-before-deployment")
 DB = os.environ.get("DATABASE_PATH", "space_x.db")
@@ -200,6 +201,7 @@ def profile():
         "profile.html",
         user=user,
         balance=float(user["balance"] or 0),
+        wallet=float(user["wallet"] or 0),
         last_salary=last_salary,
         this_salary=0,
         invited_last=invited_last,
@@ -288,6 +290,81 @@ def claim_salary():
         con.close()
 
     return redirect(url_for("profile"))
+
+
+
+@app.route("/machine/<path:machine_code>")
+def machine_detail(machine_code):
+    if "uid" not in session:
+        return redirect(url_for("login"))
+    item = MACHINE_CATALOG.get(machine_code)
+    if not item:
+        return "Machine not found", 404
+    series, days, price, daily, image = item
+    machine = {"series": series, "days": days, "price": price,
+               "daily": daily, "image": image}
+    return render_template("machine_detail.html", name=machine_code,
+                           machine=machine, total_income=daily * days)
+
+
+@app.route("/purchase/<path:machine_code>", methods=["POST"])
+def purchase_machine(machine_code):
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    item = MACHINE_CATALOG.get(machine_code)
+    if not item:
+        flash("Machine not found.", "error")
+        return redirect(url_for("ai"))
+
+    source = request.form.get("payment_source", "").lower()
+    if source not in ("wallet", "balance"):
+        flash("Choose Wallet or Balance.", "error")
+        return redirect(url_for("machine_detail", machine_code=machine_code))
+
+    _, _, price, _, _ = item
+    con = db()
+    try:
+        con.execute("BEGIN IMMEDIATE")
+        user = con.execute(
+            "SELECT id, balance, wallet FROM users WHERE id=?",
+            (session["uid"],)
+        ).fetchone()
+        if not user:
+            con.rollback()
+            session.clear()
+            return redirect(url_for("login"))
+
+        funds = float(user[source] or 0)
+        if funds < price:
+            con.rollback()
+            flash("Insufficient funds", "error")
+            return redirect(url_for("machine_detail", machine_code=machine_code))
+
+        changed = con.execute(
+            f"UPDATE users SET {source}=COALESCE({source},0)-? "
+            f"WHERE id=? AND COALESCE({source},0)>=?",
+            (price, user["id"], price)
+        ).rowcount
+        if changed != 1:
+            con.rollback()
+            flash("Insufficient funds", "error")
+            return redirect(url_for("machine_detail", machine_code=machine_code))
+        con.execute("""
+            INSERT INTO machine_purchases
+                (user_id, machine_code, status, purchased_at, price, payment_source)
+            VALUES (?, ?, 'successful', datetime('now'), ?, ?)
+        """, (user["id"], machine_code, price, source))
+        con.commit()
+        flash("Purchase successful", "success")
+    except Exception:
+        con.rollback()
+        app.logger.exception("Machine purchase failed")
+        flash("Purchase could not be completed. Please try again.", "error")
+    finally:
+        con.close()
+
+    return redirect(url_for("machine_detail", machine_code=machine_code))
 
 @app.route("/logout")
 def logout(): session.clear(); return redirect(url_for("login"))

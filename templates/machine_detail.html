@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ name }} | Space X{% endblock %}
+{% block content %}
+<div class="md-page">
+  <a href="{{ url_for('ai') }}" class="md-back">← Back to machines</a>
+  <div class="md-card">
+    <img src="{{ url_for('static', filename='images/' ~ machine.image) }}"
+         alt="{{ name }}" class="md-image" loading="eager">
+    <div class="md-content">
+      <small>{{ machine.series }}</small>
+      <h1>{{ name }}</h1>
+      <p><span>Lock period</span><b>{{ machine.days }} Days</b></p>
+      <p><span>Price</span><b>{{ "{:,.2f}".format(machine.price) }} UGX</b></p>
+      <p><span>Daily income</span><b>{{ "{:,.2f}".format(machine.daily) }} UGX</b></p>
+      <p><span>Total projected income</span><b>{{ "{:,.2f}".format(total_income) }} UGX</b></p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="md-message {{ 'md-success' if category == 'success' else 'md-error' }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <h3>Choose payment method</h3>
+      <form method="post" action="{{ url_for('purchase_machine', machine_code=name) }}">
+        <button name="payment_source" value="wallet" class="md-wallet">Purchase using Wallet</button>
+        <button name="payment_source" value="balance" class="md-balance">Purchase using Balance</button>
+      </form>
+      <small class="md-note">Payment is deducted only from the account you select. Projected income is not guaranteed.</small>
+    </div>
+  </div>
+  {% include "_bottom_nav.html" %}
+</div>
+<style>
+.md-page{background:#000;color:#eee;min-height:100vh;padding:14px 12px 100px}
+.md-back{display:block;color:#08baf0;text-decoration:none;margin-bottom:16px}
+.md-card{max-width:620px;margin:auto;background:#101010;border:1px solid #153548;border-radius:12px;overflow:hidden}
+.md-image{width:100%;height:230px;object-fit:cover;display:block;background:#080a0c}
+.md-content{padding:18px}
+.md-content small{color:#12bdf3}
+.md-content h1{margin:6px 0 18px}
+.md-content p{display:flex;justify-content:space-between;gap:12px;padding:12px 0;margin:0;border-bottom:1px solid #263039}
+.md-content p span{color:#b9c3cc}
+.md-content p b{text-align:right}
+.md-content h3{font-size:15px;margin:22px 0 12px}
+.md-content form{display:grid;gap:11px}
+.md-content button{padding:15px;border:0;border-radius:8px;color:#fff;font-weight:bold;font-size:15px}
+.md-wallet{background:#087fd0}
+.md-balance{background:#08a65a}
+.md-message{padding:13px;border-radius:7px;margin:15px 0;text-align:center;font-weight:bold}
+.md-success{background:#d9fbe5;color:#087b38;border:1px solid #20b45c}
+.md-error{background:#ffe0e0;color:#a51616;border:1px solid #e84c4c}
+.md-note{display:block;margin-top:15px;line-height:1.5;color:#9aa4ad}
+</style>
+{% endblock %}
