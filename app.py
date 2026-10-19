@@ -12,24 +12,72 @@ with db() as c:
 def index(): return redirect(url_for("register"))
 @app.route("/register", methods=["GET","POST"])
 def register():
+    invite = request.args.get("ref", "").strip()
     if request.method == "POST":
-        phone=request.form.get("phone","").strip()
-        pw=request.form.get("password","")
-        confirm=request.form.get("confirm","")
-        code=request.form.get("captcha_input","").strip()
-        real=request.form.get("real_captcha","").strip()
-        if not phone or not pw: flash("Phone number and password are required.","error")
-        elif pw != confirm: flash("Passwords do not match.","error")
-        elif len(pw)<8: flash("Use at least 8 characters for your password.","error")
-        elif not code or code != real: flash("Incorrect verification code.","error")
+        phone = request.form.get("phone", "").strip()
+        pw = request.form.get("password", "")
+        confirm = request.form.get("confirm", "")
+        code = request.form.get("captcha_input", "").strip()
+        real = request.form.get("real_captcha", "").strip()
+        invite = request.form.get("invite", "").strip()
+
+        if not phone or not pw:
+            flash("Phone number and password are required.", "error")
+        elif pw != confirm:
+            flash("Passwords do not match.", "error")
+        elif len(pw) < 8:
+            flash("Use at least 8 characters for your password.", "error")
+        elif not code or code != real:
+            flash("Incorrect verification code.", "error")
         else:
             try:
-                with db() as c: c.execute("INSERT INTO users(phone,password_hash) VALUES(?,?)",(phone,generate_password_hash(pw)))
-                flash("Account created. Please log in.","success"); return redirect(url_for("login"))
-            except sqlite3.IntegrityError: flash("Phone number already registered.","error")
+                with db() as c:
+                    inviter = None
+                    if invite:
+                        inviter = c.execute(
+                            "SELECT id FROM users WHERE referral_code=?",
+                            (invite,)
+                        ).fetchone()
+                        if not inviter:
+                            flash("Invalid invitation code.", "error")
+                            real_captcha = ''.join(
+                                secrets.choice(string.digits) for _ in range(4)
+                            )
+                            return render_template(
+                                "register.html",
+                                real_captcha=real_captcha,
+                                invite=invite
+                            )
+
+                    c.execute(
+                        """INSERT INTO users
+                           (phone, password_hash, referred_by, created_at)
+                           VALUES (?, ?, ?, datetime('now'))""",
+                        (phone, generate_password_hash(pw),
+                         inviter["id"] if inviter else None)
+                    )
+                    new_id = c.execute(
+                        "SELECT id FROM users WHERE phone=?", (phone,)
+                    ).fetchone()["id"]
+
+                    referral_code = secrets.token_urlsafe(8).replace("-", "").replace("_", "")[:10]
+                    c.execute(
+                        "UPDATE users SET referral_code=? WHERE id=?",
+                        (referral_code, new_id)
+                    )
+
+                flash("Account created. Please log in.", "success")
+                return redirect(url_for("login"))
+            except sqlite3.IntegrityError:
+                flash("Phone number already registered.", "error")
+
     real_captcha = ''.join(secrets.choice(string.digits) for _ in range(4))
-    return render_template("register.html", real_captcha=real_captcha,
-                           invite=request.args.get("ref", ""))
+    return render_template(
+        "register.html",
+        real_captcha=real_captcha,
+        invite=invite
+    )
+
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method=="POST":
@@ -53,9 +101,135 @@ def income():
 
 @app.route("/profile")
 def profile():
+    from datetime import date, timedelta
+
     if "uid" not in session:
         return redirect(url_for("login"))
-    return render_template("profile.html")
+
+    today = date.today()
+    first_this_month = today.replace(day=1)
+    first_last_month = (first_this_month - timedelta(days=1)).replace(day=1)
+    last_month = first_last_month.strftime("%Y-%m")
+
+    with db() as c:
+        user = c.execute(
+            "SELECT * FROM users WHERE id=?", (session["uid"],)
+        ).fetchone()
+
+        if not user:
+            session.clear()
+            return redirect(url_for("login"))
+
+        invited_last = c.execute("""
+            SELECT COUNT(*) FROM users
+            WHERE referred_by=? AND created_at>=? AND created_at<?
+        """, (user["id"], first_last_month.isoformat(),
+              first_this_month.isoformat())).fetchone()[0]
+
+        invited_this = c.execute("""
+            SELECT COUNT(*) FROM users
+            WHERE referred_by=? AND created_at>=?
+        """, (user["id"], first_this_month.isoformat())).fetchone()[0]
+
+        claim = c.execute("""
+            SELECT amount FROM salary_claims
+            WHERE user_id=? AND salary_month=?
+        """, (user["id"], last_month)).fetchone()
+
+        last_salary = claim["amount"] if claim else 0
+
+    return render_template(
+        "profile.html",
+        user=user,
+        balance=float(user["balance"] or 0),
+        last_salary=last_salary,
+        this_salary=0,
+        invited_last=invited_last,
+        invited_this=invited_this
+    )
+
+
+@app.route("/claim-salary", methods=["POST"])
+def claim_salary():
+    from datetime import date, datetime, timedelta
+
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    today = date.today()
+    if today.day != 1:
+        flash("Salary can only be claimed on the first day of each month.", "error")
+        return redirect(url_for("profile"))
+
+    # Calculate the previous calendar month.
+    first_this_month = today.replace(day=1)
+    last_month_end = first_this_month
+    last_month_start = (first_this_month - timedelta(days=1)).replace(day=1)
+    start = last_month_start.isoformat()
+    end = last_month_end.isoformat()
+    salary_month = last_month_start.strftime("%Y-%m")
+
+    con = db()
+    try:
+        con.execute("BEGIN IMMEDIATE")
+
+        # Count direct referrals registered last month who have a paid
+        # purchase matching one of the inviter's paid machine purchases.
+        row = con.execute("""
+            SELECT COUNT(DISTINCT invited.id) AS qualifying_count
+            FROM users AS invited
+            WHERE invited.referred_by = ?
+              AND invited.created_at >= ?
+              AND invited.created_at < ?
+              AND EXISTS (
+                  SELECT 1
+                  FROM machine_purchases AS their_purchase
+                  JOIN machine_purchases AS my_purchase
+                    ON my_purchase.machine_code = their_purchase.machine_code
+                  WHERE their_purchase.user_id = invited.id
+                    AND their_purchase.status = 'paid'
+                    AND their_purchase.purchased_at >= ?
+                    AND their_purchase.purchased_at < ?
+                    AND my_purchase.user_id = ?
+                    AND my_purchase.status = 'paid'
+              )
+        """, (session["uid"], start, end, start, end, session["uid"])).fetchone()
+
+        qualifying_count = row["qualifying_count"] or 0
+        amount = qualifying_count * 3000
+
+        if amount <= 6000:
+            con.rollback()
+            flash(
+                "You are not eligible. Your qualifying salary must be greater than UGX 6,000.",
+                "error"
+            )
+            return redirect(url_for("profile"))
+
+        # Unique(user_id, salary_month) prevents a second claim.
+        con.execute("""
+            INSERT INTO salary_claims (user_id, salary_month, amount)
+            VALUES (?, ?, ?)
+        """, (session["uid"], salary_month, amount))
+
+        con.execute("""
+            UPDATE users SET balance = COALESCE(balance, 0) + ?
+            WHERE id = ?
+        """, (amount, session["uid"]))
+
+        con.commit()
+        flash(f"Salary of UGX {amount:,.0f} credited to your Balance.", "success")
+    except sqlite3.IntegrityError:
+        con.rollback()
+        flash("You have already claimed salary for this month.", "error")
+    except Exception:
+        con.rollback()
+        app.logger.exception("Salary claim failed")
+        flash("Salary could not be claimed. Please contact support.", "error")
+    finally:
+        con.close()
+
+    return redirect(url_for("profile"))
 
 @app.route("/logout")
 def logout(): session.clear(); return redirect(url_for("login"))
