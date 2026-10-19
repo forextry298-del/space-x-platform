@@ -38,12 +38,6 @@
     <div><span>Invited this month</span><strong>0</strong></div>
   </section>
 
-  <nav class="sx-bottom-nav" aria-label="Main navigation">
-    <a href="{{ url_for('dashboard') }}"><span class="sx-profile-nav-icon">⌂</span><small>Home</small></a>
-    <a href="{{ url_for('dashboard') }}#messages"><span class="sx-profile-nav-icon">●</span><small>Chats</small></a>
-    <a href="{{ url_for('dashboard') }}#ai"><span class="sx-profile-nav-icon">♟</span><small>AI</small></a>
-    <a href="{{ url_for('income') }}"><span class="sx-profile-nav-icon">▤</span><small>Income</small></a>
-    <a class="active" href="{{ url_for('profile') }}" aria-current="page"><span class="sx-profile-nav-icon">♟</span><small>Profile</small></a>
-  </nav>
+  {% include "_bottom_nav.html" %}
 </div>
 {% endblock %}
