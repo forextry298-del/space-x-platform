@@ -984,3 +984,93 @@ nav.sx-bottom-nav > a.active small {
   fill: #fff !important;
   stroke: #fff !important;
 }
+
+/* PROFILE REWARD CONTINUATION */
+.sx-profile-page .sx-reward-continuation {
+  padding: 25px 18px 20px !important;
+  margin-top: 18px !important;
+  margin-bottom: 18px !important;
+  border-radius: 18px !important;
+  background: #101010 !important;
+}
+.sx-profile-page .sx-reward-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 4px;
+  text-align: center;
+}
+.sx-profile-page .sx-reward-summary span {
+  display: block;
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+.sx-profile-page .sx-reward-summary strong {
+  display: block;
+  color: #fff;
+  font-size: 38px;
+  line-height: 1.1;
+}
+.sx-profile-page .sx-reward-button {
+  grid-column: 1 / 3;
+  width: 100%;
+  min-height: 64px;
+  border: 0;
+  border-radius: 17px;
+  background: #08aaf0;
+  color: #fff;
+  font-size: 18px;
+}
+.sx-profile-page .sx-reward-table {
+  margin-top: 25px;
+}
+.sx-profile-page .sx-reward-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 73px;
+  padding: 0 9px;
+  border-bottom: 1px solid #164052;
+  color: #c8c8c8;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.sx-profile-page .sx-reward-row > :last-child {
+  text-align: right;
+}
+.sx-profile-page .sx-reward-heading {
+  min-height: 43px;
+  color: #aaa;
+  font-size: 15px;
+}
+.sx-profile-page .sx-reward-row:last-child {
+  border-bottom: 0;
+}
+
+/* COMPACT REWARD CONTINUATION */
+.sx-profile-page .sx-reward-continuation {
+  padding: 10px 10px 8px !important;
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+  border-radius: 14px !important;
+  background: #101010 !important;
+}
+.sx-profile-page .sx-reward-button {
+  min-height: 44px !important;
+  padding: 9px 5px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+}
+.sx-profile-page .sx-reward-table {
+  margin-top: 8px !important;
+}
+.sx-profile-page .sx-reward-row {
+  min-height: 48px !important;
+  padding: 0 7px !important;
+  font-size: 14px !important;
+}
+.sx-profile-page .sx-reward-heading {
+  min-height: 34px !important;
+  font-size: 13px !important;
+}

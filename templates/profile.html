@@ -62,6 +62,33 @@
     <div><span>Invited this month</span><strong>0</strong></div>
   </section>
 
+
+  <section class="sx-profile-card sx-reward-continuation">
+    <button type="button" class="sx-reward-button">Get last month's reward</button>
+
+    <div class="sx-reward-table">
+      <div class="sx-reward-row sx-reward-heading">
+        <strong>Invite</strong><strong>Reward</strong>
+      </div>
+      {% for count, reward in [
+        (2, '21,797'),
+        (6, '54,493'),
+        (15, '108,985'),
+        (30, '217,971'),
+        (60, '435,942'),
+        (100, '871,884'),
+        (150, '1,743,768'),
+        (300, '4,359,419'),
+        (600, '10,898,548'),
+        (1000, '54,492,738')
+      ] %}
+      <div class="sx-reward-row">
+        <span>{{ count }}</span><span>{{ reward }} UGX</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
   {% include "_bottom_nav.html" %}
 </div>
 {% endblock %}
