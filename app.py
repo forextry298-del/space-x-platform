@@ -7,7 +7,35 @@ DB = os.environ.get("DATABASE_PATH", "space_x.db")
 def db():
     c = sqlite3.connect(DB); c.row_factory = sqlite3.Row; return c
 with db() as c:
-    c.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, phone TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL)")
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            phone TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            balance REAL NOT NULL DEFAULT 0,
+            referral_code TEXT,
+            referred_by INTEGER,
+            created_at TEXT
+        )
+    """)
+
+    # Safely upgrade existing databases without deleting user records.
+    columns = {
+        row["name"]
+        for row in c.execute("PRAGMA table_info(users)").fetchall()
+    }
+
+    migrations = {
+        "balance": "ALTER TABLE users ADD COLUMN balance REAL NOT NULL DEFAULT 0",
+        "referral_code": "ALTER TABLE users ADD COLUMN referral_code TEXT",
+        "referred_by": "ALTER TABLE users ADD COLUMN referred_by INTEGER",
+        "created_at": "ALTER TABLE users ADD COLUMN created_at TEXT",
+    }
+
+    for name, sql in migrations.items():
+        if name not in columns:
+            c.execute(sql)
+            print("Added missing users column:", name)
 @app.route("/")
 def index(): return redirect(url_for("register"))
 @app.route("/register", methods=["GET","POST"])
