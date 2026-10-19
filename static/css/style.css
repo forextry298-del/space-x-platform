@@ -1074,3 +1074,95 @@ nav.sx-bottom-nav > a.active small {
   min-height: 34px !important;
   font-size: 13px !important;
 }
+
+
+/* AI page: match the reference screenshot */
+html:has(.ai-shell), body:has(.ai-shell) {
+  background: #000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.ai-shell {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 0 76px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #000 !important;
+  box-sizing: border-box !important;
+}
+.ai-shell .sx-ai-page {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 8px 0 85px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #000 !important;
+  box-sizing: border-box !important;
+}
+.ai-shell .sx-machine-list {
+  padding: 8px 12px 12px !important;
+}
+.ai-shell .sx-machine-card {
+  border: 1px solid #153548 !important;
+  border-radius: 8px !important;
+  background: #101010 !important;
+}
+.ai-shell nav.sx-bottom-nav {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 76px !important;
+  margin: 0 !important;
+  z-index: 99999 !important;
+  background: #000 !important;
+  border-top: 1px solid #181818 !important;
+}
+
+/* Compact AI machine layout */
+.ai-shell .sx-series-tabs {
+  gap: 7px !important;
+  padding: 3px 10px 10px !important;
+}
+.ai-shell .sx-series-tabs button {
+  padding: 9px 16px !important;
+  font-size: 13px !important;
+}
+.ai-shell .sx-machine-list {
+  gap: 9px !important;
+  padding: 5px 10px 12px !important;
+}
+.ai-shell .sx-machine-card {
+  grid-template-columns: 44% 56% !important;
+  min-height: 112px !important;
+}
+.ai-shell .sx-machine-image {
+  min-height: 112px !important;
+}
+.ai-shell .sx-machine-star {
+  font-size: 14px !important;
+  padding: 1px 4px !important;
+}
+.ai-shell .sx-image-placeholder {
+  font-size: 9px !important;
+  padding: 7px !important;
+}
+.ai-shell .sx-machine-info {
+  padding: 7px 8px !important;
+}
+.ai-shell .sx-machine-info h2 {
+  font-size: 14px !important;
+  margin-bottom: 5px !important;
+}
+.ai-shell .sx-machine-info p {
+  font-size: 11px !important;
+  margin: 4px 0 !important;
+  line-height: 1.3 !important;
+}

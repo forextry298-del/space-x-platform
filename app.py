@@ -144,6 +144,13 @@ def dashboard():
 
 
 
+@app.route("/ai")
+def ai():
+    if "uid" not in session:
+        return redirect(url_for("login"))
+    return render_template("ai.html")
+
+
 @app.route("/income")
 def income():
     if "uid" not in session:

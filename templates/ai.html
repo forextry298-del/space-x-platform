@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}AI Machines | Space X{% endblock %}
+{% block content %}
+<div class="sx-ai-page">
+  <nav class="sx-series-tabs" aria-label="Machine series">
+    <button class="selected" data-series="All">All</button>
+    <button data-series="VIP Series">VIP Series</button>
+    <button data-series="A Series">A Series</button>
+    <button data-series="CS series">CS series</button>
+    <button data-series="N series">N series</button>
+    <button data-series="K series">K series</button>
+    <button data-series="GS series">GS series</button>
+  </nav>
+
+  <main class="sx-machine-list">
+    {% set machines = [
+      ('VIP Series','VIP-1','20','21,799.24','2,171.88','x1'),
+      ('VIP Series','VIP-1 PRO','40','32,698.86','3,257.82','x1'),
+      ('VIP Series','VIP-2','20','54,498.10','5,992.78','x2'),
+      ('VIP Series','VIP-2 PRO','40','54,498.10','5,429.70','x2'),
+      ('A Series','A-1 Plus','16','20,110.00','2,011.00','x1'),
+      ('A Series','A-1','16','32,698.86','3,257.82','x1'),
+      ('A Series','A-2','16','80,440.00','8,044.00','x1'),
+      ('CS series','CS-1','30','59,927.80','35,956.68','x1'),
+      ('CS series','CS-2','30','179,823.62','119,895.82','x2'),
+      ('CS series','CS-3','30','539,470.86','395,603.92','x3'),
+      ('N series','N-1','20','54,498.10','20,110.00','x1'),
+      ('N series','N-2','20','163,494.30','60,330.00','x2'),
+      ('N series','N-3','20','490,442.68','120,660.00','x3'),
+      ('K series','K-1 MAX','3','108,996.20','54,498.10','x1'),
+      ('K series','K-3 MAX','3','402,200.00','201,100.00','x3'),
+      ('K series','K-4 MAX','3','603,300.00','269,474.00','x3'),
+      ('K series','K-5 MAX','3','804,400.00','337,848.00','x3')
+    ] %}
+    {% for series, name, days, price, daily, quantity in machines %}
+    <article class="sx-machine-card" data-machine-series="{{ series }}">
+      <div class="sx-machine-image">
+        <span class="sx-machine-star">⭐ {{ quantity }}</span>
+        <span class="sx-image-placeholder">Machine image</span>
+      </div>
+      <div class="sx-machine-info">
+        <h2>{{ name }}</h2>
+        <p>Lock: {{ days }} Days</p>
+        <p>Price: {{ price }} UGX</p>
+        <p>Daily: {{ daily }} UGX</p>
+      </div>
+    </article>
+    {% endfor %}
+  </main>
+
+  {% include "_bottom_nav.html" %}
+</div>
+
+
+<style>
+.sx-ai-page {
+  background: #000;
+  color: #eee;
+  min-height: 100vh;
+  padding: 10px 0 90px;
+  overflow: hidden;
+}
+.sx-series-tabs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 12px 16px;
+  scrollbar-width: none;
+  background: #000;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.sx-series-tabs::-webkit-scrollbar { display: none; }
+.sx-series-tabs button {
+  flex: 0 0 auto;
+  border: 1px solid #12364a;
+  background: #030608;
+  color: #eee;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.sx-series-tabs button.selected {
+  background: #08aaf0;
+  border-color: #08aaf0;
+  color: #fff;
+  font-weight: bold;
+}
+.sx-machine-list {
+  display: grid;
+  gap: 12px;
+  padding: 8px 12px;
+}
+.sx-machine-card {
+  display: grid;
+  grid-template-columns: 44% 56%;
+  min-height: 140px;
+  border: 1px solid #153548;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #101010;
+  box-sizing: border-box;
+}
+.sx-machine-card[hidden] { display: none !important; }
+.sx-machine-image {
+  position: relative;
+  min-width: 0;
+  min-height: 140px;
+  background: #080a0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-right: 1px solid #172d3a;
+}
+.sx-machine-star {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 1;
+  background: rgba(0,0,0,.65);
+  color: #ffd83d;
+  font-size: 17px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+.sx-image-placeholder {
+  color: #637887;
+  font-size: 11px;
+  border: 1px dashed #263b48;
+  padding: 10px;
+  text-align: center;
+}
+.sx-machine-info {
+  padding: 10px 8px;
+  min-width: 0;
+  align-self: center;
+  box-sizing: border-box;
+}
+.sx-machine-info h2 {
+  font-size: 16px;
+  color: #12a8f5;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.sx-machine-info p {
+  font-size: 12px;
+  color: #d0d0d0;
+  margin: 6px 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.sx-ai-page .sx-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+@media (min-width: 420px) {
+  .sx-machine-info h2 { font-size: 18px; }
+  .sx-machine-info p { font-size: 14px; }
+}
+</style>
+
+
+<script>
+document.querySelectorAll('.sx-series-tabs button').forEach(button=>{
+  button.addEventListener('click',()=>{
+    document.querySelectorAll('.sx-series-tabs button').forEach(b=>b.classList.remove('selected'));
+    button.classList.add('selected');
+    const series=button.dataset.series;
+    document.querySelectorAll('.sx-machine-card').forEach(card=>{
+      card.hidden=series!=='All' && card.dataset.machineSeries!==series;
+    });
+  });
+});
+</script>
+{% endblock %}
