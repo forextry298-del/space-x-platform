@@ -36,6 +36,29 @@ with db() as c:
         if name not in columns:
             c.execute(sql)
             print("Added missing users column:", name)
+
+    # Create salary and machine purchase tables if missing.
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS machine_purchases (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            machine_code TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'pending',
+            purchased_at TEXT
+        )
+    """)
+
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS salary_claims (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            salary_month TEXT NOT NULL,
+            amount REAL NOT NULL,
+            claimed_at TEXT NOT NULL DEFAULT (datetime('now')),
+            UNIQUE(user_id, salary_month)
+        )
+    """)
+    print("Salary and machine purchase tables verified.")
 @app.route("/")
 def index(): return redirect(url_for("register"))
 @app.route("/register", methods=["GET","POST"])
