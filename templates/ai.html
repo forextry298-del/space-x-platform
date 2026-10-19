@@ -41,6 +41,9 @@
         {% elif name == 'VIP-2' %}
         <img src="{{ url_for('static', filename='images/vip2-tesla.png') }}"
              alt="Tesla for VIP-2" class="sx-machine-photo">
+        {% elif name == 'VIP-2 PRO' %}
+        <img src="{{ url_for('static', filename='images/vip2-pro-tesla.png') }}"
+             alt="Flying Tesla for VIP-2 PRO" class="sx-machine-photo">
         {% else %}
         <span class="sx-image-placeholder">Machine image</span>
         {% endif %}
