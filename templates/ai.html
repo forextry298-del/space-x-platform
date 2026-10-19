@@ -35,7 +35,6 @@
     {% for series, name, days, price, daily, quantity in machines %}
     <article class="sx-machine-card" data-machine-series="{{ series }}">
       <div class="sx-machine-image">
-        <span class="sx-machine-star">⭐ {{ quantity }}</span>
         {% if name in ['VIP-1', 'VIP-1 PRO'] %}
         <img src="{{ url_for('static', filename='images/vip1-space-x.png') }}"
              alt="Space X {{ name }}" class="sx-machine-photo">
@@ -119,19 +118,9 @@
   justify-content: center;
   overflow: hidden;
   border-right: 1px solid #172d3a;
-}
-.sx-machine-photo { width:100%; height:140px; min-height:0; object-fit:contain; display:block; flex:0 0 100%; }\n.sx-machine-star {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  z-index: 1;
-  background: rgba(0,0,0,.65);
-  color: #ffd83d;
-  font-size: 17px;
-  font-weight: bold;
-  padding: 2px 5px;
-  border-radius: 3px;
-}
+ padding:0; margin:0; }
+.sx-machine-image { position:relative; overflow:hidden; }
+.sx-machine-photo { width:100%; height:100%; min-height:140px; object-fit:cover; display:block; position:absolute; inset:0; }\n
 .sx-image-placeholder {
   color: #637887;
   font-size: 11px;
