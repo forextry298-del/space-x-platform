@@ -42,6 +42,15 @@ def login():
 def dashboard():
     if "uid" not in session: return redirect(url_for("login"))
     return render_template("dashboard.html", phone=session.get("phone",""))
+
+
+
+@app.route("/income")
+def income():
+    if "uid" not in session:
+        return redirect(url_for("login"))
+    return render_template("income.html")
+
 @app.route("/logout")
 def logout(): session.clear(); return redirect(url_for("login"))
 if __name__=="__main__": app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)))
