@@ -56,6 +56,14 @@
         <img src="{{ url_for('static', filename='images/n2-rocket-satellite.png') }}" alt="N-2 rocket and satellite" class="sx-machine-photo">
         {% elif name == 'N-3' %}
         <img src="{{ url_for('static', filename='images/n3-satellite-explosion.png') }}" alt="N-3 satellite explosion" class="sx-machine-photo">
+        {% elif name == 'K-1 MAX' %}
+        <img src="{{ url_for('static', filename='images/k1-moon-rocket.jpg') }}" alt="K-1 MAX rocket on the Moon" class="sx-machine-photo" loading="eager" fetchpriority="high" decoding="async">
+        {% elif name == 'K-3 MAX' %}
+        <img src="{{ url_for('static', filename='images/k2-jupiter-rocket.jpg') }}" alt="K-3 MAX rocket near Jupiter" class="sx-machine-photo" loading="eager" decoding="async">
+        {% elif name == 'K-4 MAX' %}
+        <img src="{{ url_for('static', filename='images/k3-black-hole-rocket.jpg') }}" alt="K-4 MAX rocket near a black hole" class="sx-machine-photo" loading="eager" decoding="async">
+        {% elif name == 'K-5 MAX' %}
+        <img src="{{ url_for('static', filename='images/k4-universe-rocket.jpg') }}" alt="K-5 MAX rocket in the universe" class="sx-machine-photo" loading="eager" decoding="async">
         {% elif name == 'A-1 Plus' %}
         <img src="{{ url_for('static', filename='images/a1-plus-rocket.png') }}"
              alt="A-1 Plus rocket" class="sx-machine-photo">
