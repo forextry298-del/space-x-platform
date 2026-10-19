@@ -323,3 +323,266 @@
   .sx-bottom-nav .sx-nav-icon { width: 30px !important; height: 30px !important; }
   .sx-bottom-nav a small { font-size: 12px !important; }
 }
+/* SPACE X PROFILE DESIGN */
+.sx-profile-page{color:#f5f7fa;padding:22px 14px 115px!important}
+.sx-profile-page h1{font-size:27px;margin:8px 0}
+.sx-profile-page>p{color:#aaa;font-size:14px}
+.sx-profile-card,.sx-profile-balance,.sx-profile-services{background:#101010;border:1px solid #123343;border-radius:18px;padding:18px;margin:18px 0;box-sizing:border-box}
+.sx-profile-card h2{margin:0 0 8px;font-size:19px}
+.sx-profile-card p{color:#aaa;margin:0}
+.sx-profile-balance{display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:center}
+.sx-profile-balance div{display:flex;flex-direction:column;gap:10px}
+.sx-profile-balance span{color:#aaa;font-size:13px}
+.sx-profile-balance strong{font-size:clamp(18px,5vw,25px)}
+.sx-profile-balance p{grid-column:1/-1;color:#888;font-size:11px;margin:0}
+.sx-profile-page h2{font-size:19px}
+.sx-profile-services{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 8px}
+.sx-profile-services a{display:flex;min-width:0;min-height:65px;align-items:center;justify-content:center;text-align:center;padding:10px 3px;border-radius:12px;background:#151515;border:1px solid #123343;color:#eee;text-decoration:none;font-size:12px;overflow-wrap:anywhere}
+.sx-profile-page .sx-bottom-nav a.active{color:#08adf4!important}
+@media(max-width:360px){.sx-profile-services{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* PROFILE - MATCH HOME DASHBOARD */
+.sx-profile-page{background:#000!important;color:#f5f5f5;padding:18px 14px 110px!important;min-height:100vh;box-sizing:border-box}
+.sx-prof-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+.sx-prof-head p{color:#08adf4;margin:0 0 8px;font-size:14px}
+.sx-prof-head h1{font-size:24px;font-weight:500;margin:0 0 16px}
+.sx-prof-message{display:inline-block;border:1px solid #087db0;border-radius:24px;padding:10px 15px;background:#031d29;color:#08adf4;text-decoration:none}
+.sx-prof-logo{width:78px;height:78px;flex-shrink:0;border:3px solid #08adf4;border-radius:50%;display:grid;place-items:center;font-size:52px}
+.sx-prof-wallet,.sx-prof-services,.sx-prof-panel{background:#101010;border:1px solid #123343;border-radius:23px;padding:18px;margin:20px 0 30px;box-sizing:border-box}
+.sx-prof-wallet{display:grid;grid-template-columns:1fr 1fr;gap:24px 8px;text-align:center}
+.sx-prof-wallet div{display:flex;flex-direction:column;gap:12px;min-width:0}
+.sx-prof-wallet span,.sx-prof-two span{color:#aaa;font-size:14px}
+.sx-prof-wallet strong,.sx-prof-two strong{font-size:clamp(20px,5vw,29px);overflow-wrap:anywhere}
+.sx-prof-wallet .sx-prof-mini{gap:8px}
+.sx-prof-wallet .sx-prof-mini b{font-size:18px}
+.sx-prof-mark{grid-column:1/-1;color:#08adf4}
+.sx-prof-services{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 8px;padding:28px 10px}
+.sx-prof-services a{display:flex;min-width:0;flex-direction:column;align-items:center;gap:8px;text-align:center;text-decoration:none;color:#ccc;font-size:13px;overflow-wrap:anywhere}
+.sx-prof-services a b{width:54px;height:54px;border-radius:17px;background:#08adf4;color:white;display:grid;place-items:center;font-size:27px}
+.sx-prof-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:center}
+.sx-prof-two div{display:flex;flex-direction:column;gap:20px;min-width:0}
+.sx-prof-button{width:100%;border:0;border-radius:15px;background:#08adf4;color:white;font-size:16px;padding:20px 8px;margin-top:24px}
+.sx-prof-table{width:100%;border-collapse:collapse;margin-top:28px;color:#bbb;font-size:14px}
+.sx-prof-table th,.sx-prof-table td{padding:17px 4px;border-bottom:1px solid #123343}
+.sx-prof-table th:first-child,.sx-prof-table td:first-child{text-align:left}
+.sx-prof-table th:last-child,.sx-prof-table td:last-child{text-align:right}
+.sx-prof-panel h2{font-size:18px}
+.sx-prof-panel p{color:#aaa}
+.sx-prof-logout{display:block;text-align:center;padding:14px;background:#08adf4;color:#fff;border-radius:12px;text-decoration:none}
+.sx-profile-page .sx-bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;z-index:9999!important}
+@media(max-width:360px){.sx-prof-services{grid-template-columns:repeat(3,minmax(0,1fr))}.sx-prof-logo{width:62px;height:62px;font-size:42px}}
+
+/* PROFILE FINAL VISUAL CORRECTION */
+.dashboard-shell:has(.sx-profile-page),
+.page-shell:has(.sx-profile-page) {
+  background: #000 !important;
+  background-image: none !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+.sx-profile-page {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  background: #000 !important;
+  color: #f5f5f5 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.sx-profile-page h1,
+.sx-profile-page h2,
+.sx-profile-page p,
+.sx-profile-page span,
+.sx-profile-page strong,
+.sx-profile-page b,
+.sx-profile-page a,
+.sx-profile-page th,
+.sx-profile-page td {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+.sx-prof-wallet,
+.sx-prof-services,
+.sx-prof-panel {
+  background: #101010 !important;
+  border: 1px solid #123343 !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+}
+.sx-prof-services a b {
+  background: #08adf4 !important;
+  color: #fff !important;
+  border-radius: 16px !important;
+}
+.sx-prof-button,
+.sx-prof-logout {
+  background: #08adf4 !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+}
+.sx-profile-page .sx-bottom-nav {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  z-index: 99999 !important;
+  background: #000 !important;
+  border-top: 1px solid #171717 !important;
+}
+.sx-profile-page {
+  padding-bottom: 115px !important;
+}
+
+/* Compact profile matching Space X home */
+.dashboard-shell:has(.sx-profile-page),.page-shell:has(.sx-profile-page){display:block!important;width:100%!important;max-width:none!important;min-height:100vh!important;margin:0!important;padding:0!important;background:#000!important;background-image:none!important;box-sizing:border-box!important}
+.sx-profile-page{display:block!important;width:100%!important;max-width:none!important;margin:0!important;padding:12px 10px 100px!important;background:#000!important;color:#f5f5f5!important;font-family:Arial,Helvetica,sans-serif!important;box-sizing:border-box!important}
+.sx-profile-page *{box-sizing:border-box}
+.pf-wallet,.pf-services,.pf-panel{background:#101010;border:1px solid #123343;border-radius:19px;padding:14px;margin:12px 0 18px}
+.pf-wallet{display:grid;grid-template-columns:1fr 1fr;gap:15px 7px;text-align:center}
+.pf-wallet div,.pf-pair div{display:flex;flex-direction:column;gap:7px;min-width:0}
+.pf-wallet span,.pf-pair span{color:#aaa;font-size:clamp(11px,3.4vw,14px)}
+.pf-wallet strong,.pf-pair strong{font-size:clamp(17px,4.8vw,25px);overflow-wrap:anywhere}
+.pf-wallet b{font-size:clamp(14px,3.8vw,18px);overflow-wrap:anywhere}
+.pf-wallet small{grid-column:1/-1;color:#08adf4}
+.pf-services{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 5px;padding:18px 7px}
+.pf-services a{display:flex;min-width:0;flex-direction:column;align-items:center;gap:6px;text-align:center;text-decoration:none;color:#ccc;font-size:clamp(10px,3.3vw,13px)}
+.pf-services a b{display:grid;place-items:center;width:clamp(44px,14vw,58px);height:clamp(44px,14vw,58px);border-radius:15px;background:#08adf4;color:white;font-size:clamp(22px,7vw,31px)}
+.pf-panel{padding:16px 12px}
+.pf-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center}
+.pf-panel button,.pf-logout{display:block;width:100%;margin-top:20px;padding:15px 7px;border:0;border-radius:13px;background:#08adf4;color:#fff;text-align:center;text-decoration:none;font-size:clamp(13px,4vw,17px)}
+.pf-panel h2{font-size:18px}
+.pf-panel p{color:#aaa;font-size:14px}
+.pf-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:clamp(11px,3.6vw,14px);color:#bbb}
+.pf-table th,.pf-table td{padding:13px 3px;border-bottom:1px solid #123343}
+.pf-table th:first-child,.pf-table td:first-child{text-align:left}
+.pf-table th:last-child,.pf-table td:last-child{text-align:right}
+.sx-profile-page .sx-bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;z-index:99999!important;margin:0!important;background:#000!important}
+.sx-profile-page{padding-bottom:110px!important}
+
+/* FORCE PROFILE NAV TO MATCH HOME */
+.sx-profile-page nav.sx-bottom-nav {
+  display:flex!important;
+  position:fixed!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  width:100%!important;
+  height:78px!important;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom))!important;
+  margin:0!important;
+  align-items:center!important;
+  justify-content:space-around!important;
+  gap:0!important;
+  background:#000!important;
+  border-top:1px solid #171717!important;
+  z-index:2147483647!important;
+  box-sizing:border-box!important;
+}
+.sx-profile-page nav.sx-bottom-nav a {
+  display:flex!important;
+  flex:1 1 20%!important;
+  min-width:0!important;
+  height:100%!important;
+  padding:2px 0!important;
+  margin:0!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  background:transparent!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+}
+.sx-profile-page nav.sx-bottom-nav a.active,
+.sx-profile-page nav.sx-bottom-nav a.active small {
+  color:#08adf4!important;
+}
+.sx-profile-page nav.sx-bottom-nav .sx-nav-icon {
+  display:block!important;
+  width:28px!important;
+  height:28px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:2.5!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.sx-profile-page nav.sx-bottom-nav .sx-nav-icon.filled {
+  fill:currentColor!important;
+  stroke:none!important;
+}
+.sx-profile-page nav.sx-bottom-nav small {
+  display:block!important;
+  color:inherit!important;
+  font-size:12px!important;
+  line-height:15px!important;
+}
+.sx-profile-page {
+  padding-bottom:100px!important;
+}
+
+/* FINAL OVERRIDE: identical fixed bottom navigation on Profile */
+.sx-profile-page nav.sx-bottom-nav {
+  position: fixed !important;
+  display: flex !important;
+  inset: auto 0 0 0 !important;
+  width: 100% !important;
+  height: 76px !important;
+  padding: 6px 0 8px !important;
+  margin: 0 !important;
+  flex-direction: row !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  background: #000 !important;
+  border-top: 1px solid #171717 !important;
+  z-index: 999999 !important;
+  box-sizing: border-box !important;
+}
+.sx-profile-page nav.sx-bottom-nav > a {
+  flex: 1 1 20% !important;
+  width: 20% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: #fff !important;
+  background: transparent !important;
+  text-decoration: none !important;
+}
+.sx-profile-page nav.sx-bottom-nav > a.active,
+.sx-profile-page nav.sx-bottom-nav > a.active small {
+  color: #08adf4 !important;
+}
+.sx-profile-page nav.sx-bottom-nav .sx-nav-icon {
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 28px !important;
+  stroke: currentColor !important;
+  stroke-width: 2.5 !important;
+}
+.sx-profile-page nav.sx-bottom-nav .sx-nav-icon.filled {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+.sx-profile-page nav.sx-bottom-nav small {
+  display: block !important;
+  font-size: 12px !important;
+  line-height: 15px !important;
+  color: inherit !important;
+}
+.sx-profile-page {
+  padding-bottom: 100px !important;
+}

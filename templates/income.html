@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Income | Space X{% endblock %}
+{% block content %}
+<div class="sx-income-page">
+  <h1>Income</h1>
+  <p class="sx-income-empty">No machines yet. Purchase one from the AI tab.</p>
+
+  <nav class="sx-bottom-nav" aria-label="Main navigation">
+    <a href="{{ url_for('dashboard') }}" aria-label="Home">
+      <svg class="sx-nav-icon filled" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5v10H15v-7H9v7H3z"/></svg>
+      <small>Home</small>
+    </a>
+    <a href="{{ url_for('dashboard') }}#messages" aria-label="Chats">
+      <svg class="sx-nav-icon filled" viewBox="0 0 24 24"><path d="M3 4.5A8.5 8.5 0 0 1 11.5 13H9l-4.5 3v-3.6A8.4 8.4 0 0 1 3 4.5Zm11 5A7 7 0 0 1 21 16a7 7 0 0 1-1 3.6V22l-4-2h-2a7 7 0 0 1 0-10.5Z"/></svg>
+      <small>Chats</small>
+    </a>
+    <a href="{{ url_for('dashboard') }}#ai" aria-label="AI">
+      <svg class="sx-nav-icon filled" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v1h2a4 4 0 0 1 4 4v7a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4h2V4a2 2 0 0 1 2-2Z"/></svg>
+      <small>AI</small>
+    </a>
+    <a class="active" href="{{ url_for('income') }}" aria-current="page" aria-label="Income">
+      <svg class="sx-nav-icon filled" viewBox="0 0 24 24"><path d="M8 3c4 0 7 1 7 3s-3 3-7 3-7-1-7-3 3-3 7-3ZM1 9c2 2 11 2 14 0v4c-3 3-12 3-14 0Zm0 6c2 2 11 2 14 0v3c-3 3-12 3-14 0Zm16-7c4 0 7 1 7 3s-3 3-7 3-7-1-7-3 3-3 7-3Zm0 7c3 0 5-.5 7-2v4c-2 2-4 2-7 2Z"/></svg>
+      <small>Income</small>
+    </a>
+    <a href="{{ url_for('dashboard') }}#profile" aria-label="Profile">
+      <svg class="sx-nav-icon filled" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 3-9 6v2h18v-2c0-3-4-6-9-6Z"/></svg>
+      <small>Profile</small>
+    </a>
+  </nav>
+</div>
+{% endblock %}
