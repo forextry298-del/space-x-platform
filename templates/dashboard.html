@@ -3,6 +3,83 @@
 {% block content %}
 <div class="sx-dashboard">
 
+
+  <div id="sx-popup-overlay" class="sx-popup-overlay" hidden>
+    <section id="sx-deposit-popup" class="sx-deposit-popup"
+             role="dialog" aria-modal="true"
+             aria-labelledby="sx-popup-title">
+      <header class="sx-popup-heading">
+        <strong id="sx-popup-title">How to deposit money on Space X</strong>
+        <button type="button" id="sx-popup-close"
+                class="sx-popup-close" aria-label="Close popup">×</button>
+      </header>
+      <div class="sx-popup-copy">
+        <p>How to deposit money on Space X:</p>
+        <p>1. Open Deposit from your Profile.</p>
+        <p>2. Enter the amount and currency.</p>
+        <p>3. Tap Continue.</p>
+        <p>4. Follow the payment instructions shown.</p>
+        <p>5. Submit your payment reference and wait for verification.</p>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .sx-popup-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px; background: rgba(0, 0, 0, .66);
+    }
+    .sx-popup-overlay[hidden] { display: none; }
+    .sx-deposit-popup {
+      width: 100%; max-width: 320px; box-sizing: border-box;
+      padding: 12px; border: 1px solid #087fbd; border-radius: 10px;
+      background: #0d1420; color: #dce6f2;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, .4);
+      font-size: 12px; line-height: 1.45;
+    }
+    .sx-popup-heading {
+      display: flex; align-items: flex-start; gap: 8px;
+      color: #20aaff; font-size: 14px; margin-bottom: 9px;
+    }
+    .sx-popup-heading strong { flex: 1; }
+    .sx-popup-close {
+      border: 0; background: transparent; color: #c8d5e4;
+      font-size: 23px; line-height: 1; padding: 0 2px;
+      cursor: pointer;
+    }
+    .sx-popup-copy p { margin: 7px 0; }
+  </style>
+
+  <script>
+    (() => {
+      const overlay = document.getElementById('sx-popup-overlay');
+      const close = document.getElementById('sx-popup-close');
+      if (!overlay || !close) return;
+
+      // Show automatically on Home unless the user has dismissed it
+      // during this browser tab's current session.
+      try {
+        if (sessionStorage.getItem('sxDepositPopupDismissed') !== '1') {
+          overlay.hidden = false;
+        }
+        close.addEventListener('click', () => {
+          overlay.hidden = true;
+          sessionStorage.setItem('sxDepositPopupDismissed', '1');
+        });
+        overlay.addEventListener('click', (event) => {
+          if (event.target === overlay) {
+            overlay.hidden = true;
+            sessionStorage.setItem('sxDepositPopupDismissed', '1');
+          }
+        });
+      } catch (e) {
+        overlay.hidden = false;
+        close.addEventListener('click', () => { overlay.hidden = true; });
+      }
+    })();
+  </script>
+
   <header class="sx-top">
     <h1>AI Machine</h1>
     <a class="sx-message-link" href="#messages">
