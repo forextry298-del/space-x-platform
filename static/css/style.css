@@ -70,7 +70,7 @@
 /* Compact dashboard and reference-matched bottom navigation */
 .sx-dashboard {
   max-width: 520px !important;
-  padding: 10px 10px 82px !important;
+  padding: 64px 10px 82px !important;
   font-size: 12px !important;
 }
 .sx-top { margin-bottom: 12px !important; }
@@ -162,7 +162,7 @@
   font: 12px Arial, sans-serif;
 }
 .sx-dashboard a { text-decoration: none; }
-.sx-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.sx-top { position:fixed!important; top:0; left:0; right:0; z-index:1000; display:flex; justify-content:space-between; align-items:center; margin:0!important; padding:12px 14px; box-sizing:border-box; background:#000; }
 .sx-top h1 { font:bold 20px Arial,sans-serif; text-align:left; margin:0; }
 .sx-ticker { overflow:hidden; background:#00121c; border:1px solid #073b55; border-radius:12px; padding:12px 0; margin-bottom:10px; }
 .sx-ticker-track { display:flex; width:max-content; gap:35px; animation:spacex-ticker 24s linear infinite; }
