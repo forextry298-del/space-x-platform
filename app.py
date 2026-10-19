@@ -28,6 +28,7 @@ with db() as c:
 
     migrations = {
         "balance": "ALTER TABLE users ADD COLUMN balance REAL NOT NULL DEFAULT 0",
+        "wallet": "ALTER TABLE users ADD COLUMN wallet REAL NOT NULL DEFAULT 0",
         "referral_code": "ALTER TABLE users ADD COLUMN referral_code TEXT",
         "referred_by": "ALTER TABLE users ADD COLUMN referred_by INTEGER",
         "created_at": "ALTER TABLE users ADD COLUMN created_at TEXT",

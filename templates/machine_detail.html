@@ -28,10 +28,13 @@
       <small class="md-note">Payment is deducted only from the account you select. Projected income is not guaranteed.</small>
     </div>
   </div>
-  {% include "_bottom_nav.html" %}
+
 </div>
 <style>
-html,body{margin:0;background:#000;color:#fff}
+html,body{margin:0!important;padding:0!important;background:#000!important;color:#fff}
+.page-shell:has(.md-page){display:block!important;width:100%!important;max-width:none!important;min-height:100vh!important;margin:0!important;padding:0!important;background:#000!important;background-image:none!important;}
+.md-page{background:#000!important;color:#fff;min-height:100vh;padding:0!important;margin:0!important;box-sizing:border-box}
+.md-content button{border:0!important;box-shadow:none!important}
 .md-page{background:#000;color:#fff;min-height:100vh;padding:0 0 70px;box-sizing:border-box}
 .md-back{display:block;color:#fff;text-decoration:none;margin:8px 12px;font-size:15px}
 .md-card{width:100%;max-width:none;margin:0;background:#000;border:0;border-radius:0;overflow:hidden}
