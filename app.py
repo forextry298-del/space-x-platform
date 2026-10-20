@@ -50,6 +50,20 @@ with db() as c:
         )
     """)
 
+    # Upgrade older machine purchase tables without deleting records.
+    purchase_columns = {
+        row["name"]
+        for row in c.execute("PRAGMA table_info(machine_purchases)").fetchall()
+    }
+    purchase_migrations = {
+        "price": "ALTER TABLE machine_purchases ADD COLUMN price REAL",
+        "payment_source": "ALTER TABLE machine_purchases ADD COLUMN payment_source TEXT",
+    }
+    for name, sql in purchase_migrations.items():
+        if name not in purchase_columns:
+            c.execute(sql)
+            print("Added missing machine_purchases column:", name)
+
     c.execute("""
         CREATE TABLE IF NOT EXISTS salary_claims (
             id INTEGER PRIMARY KEY,
