@@ -1342,3 +1342,32 @@ body nav.sx-bottom-nav > a {
   box-sizing: border-box !important;
   text-align: center !important;
 }
+
+/* Navigation positions: five equal full-screen columns */
+html body nav.sx-bottom-nav {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, 20%) !important;
+  justify-content: stretch !important;
+  align-items: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+html body nav.sx-bottom-nav > a {
+  display: flex !important;
+  width: 100% !important;
+  justify-self: stretch !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
