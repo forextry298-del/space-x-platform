@@ -9,8 +9,8 @@
   <meta name="color-scheme" content="dark">
 </head>
 <body>
-  <main class="page-shell{% if request.endpoint == 'dashboard' %} dashboard-shell{% elif request.endpoint == 'income' %} income-shell{% elif request.endpoint == 'profile' %} profile-shell{% elif request.endpoint == 'ai' %} ai-shell{% endif %}">
-    {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai'] %}
+  <main class="page-shell{% if request.endpoint == 'dashboard' %} dashboard-shell{% elif request.endpoint == 'income' %} income-shell{% elif request.endpoint == 'profile' %} profile-shell{% elif request.endpoint == 'ai' %} ai-shell{% elif request.endpoint == 'transactions' %} transactions-shell{% endif %}">
+    {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai', 'transactions'] %}
     <section class="auth-panel">
       <a class="brand" href="{{ url_for('register') }}">SPACE X</a>
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -26,7 +26,11 @@
 
     {% block content %}{% endblock %}
 
-    {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai'] %}
+    {% if request.endpoint not in ['login', 'register'] %}
+      {% include "_bottom_nav.html" %}
+    {% endif %}
+
+    {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai', 'transactions'] %}
     </section>
     {% endif %}
   </main>

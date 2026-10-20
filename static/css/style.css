@@ -1166,3 +1166,90 @@ html:has(.ai-shell), body:has(.ai-shell) {
   margin: 4px 0 !important;
   line-height: 1.3 !important;
 }
+
+/* GLOBAL SPACE X NAVIGATION: identical fixed Home bar on every page */
+html body nav.sx-bottom-nav {
+  position: fixed !important;
+  inset: auto 0 0 0 !important;
+  z-index: 999999 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 82px !important;
+  min-height: 82px !important;
+  margin: 0 !important;
+  padding: 8px 3px calc(8px + env(safe-area-inset-bottom)) !important;
+  box-sizing: border-box !important;
+  background: #000 !important;
+  border-top: 1px solid #151515 !important;
+  transform: none !important;
+}
+
+html body nav.sx-bottom-nav > a {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 2px 0 !important;
+  color: #fff !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+html body nav.sx-bottom-nav .sx-nav-icon {
+  display: block !important;
+  width: 34px !important;
+  height: 34px !important;
+  color: currentColor !important;
+}
+
+html body nav.sx-bottom-nav .sx-nav-icon:not(.filled) {
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2.3 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+html body nav.sx-bottom-nav .sx-nav-icon.filled {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
+html body nav.sx-bottom-nav > a small {
+  display: block !important;
+  color: inherit !important;
+  font: 400 14px/1.2 Arial, sans-serif !important;
+  white-space: nowrap !important;
+}
+
+html body nav.sx-bottom-nav > a.active,
+html body nav.sx-bottom-nav > a.active small {
+  color: #08adf4 !important;
+}
+
+/* Keep page content clear of the fixed bottom bar */
+html body .page-shell {
+  padding-bottom: 100px !important;
+  box-sizing: border-box !important;
+}
+
+html body .sx-dashboard {
+  padding-bottom: 110px !important;
+}
+
+@media (max-width: 380px) {
+  html body nav.sx-bottom-nav .sx-nav-icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  html body nav.sx-bottom-nav > a small {
+    font-size: 12px !important;
+  }
+}
