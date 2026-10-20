@@ -934,3 +934,47 @@ body:has(form.auth-form) form.auth-form .primary-button {
   padding: 8px !important;
   font-size: 18px !important;
 }
+
+/* Rocket feature banner */
+.sx-featured-rocket{position:relative;height:300px;margin:16px 18px;overflow:hidden;border-radius:20px;background:#050913}
+.sx-rocket-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s}
+.sx-rocket-slide.is-active{opacity:1}
+.sx-rocket-caption{position:absolute;inset:auto 0 0;padding:22px 16px;background:linear-gradient(transparent,rgba(0,0,0,.94));color:#fff}
+.sx-rocket-caption span{color:#e5c37b;font-size:12px;font-weight:bold;letter-spacing:3px}
+.sx-rocket-caption h2{margin:10px 0 5px;font-size:clamp(17px,4.8vw,23px);line-height:1.25}
+.sx-rocket-caption p{margin:0;color:#ddd;font-size:13px;font-weight:bold;line-height:1.5}
+
+/* Animated connected space-wave background */
+body {
+  background-color: #020812;
+  background-image:
+    radial-gradient(ellipse at 15% 35%, rgba(0,190,255,.12), transparent 55%),
+    radial-gradient(ellipse at 85% 65%, rgba(0,255,150,.08), transparent 55%);
+  background-attachment: fixed;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(0,200,255,.65) 1px, transparent 1.8px),
+    repeating-radial-gradient(ellipse at 50% 110%, transparent 0 18px, rgba(0,180,255,.17) 19px 20px, transparent 21px 36px);
+  background-size: 22px 22px, 100% 100%;
+  animation: sxNetFlow 12s ease-in-out infinite alternate;
+}
+@keyframes sxNetFlow {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 22px 12px, 0 -35px; }
+}
+
+/* Green Withdraw button only */
+.sx-actions a.sx-withdraw {
+  background: linear-gradient(135deg, #00c853, #00a844) !important;
+  color: #ffffff !important;
+  border-color: #00c853 !important;
+}
+.sx-actions a.sx-withdraw:hover {
+  background: linear-gradient(135deg, #00e676, #00b84a) !important;
+}

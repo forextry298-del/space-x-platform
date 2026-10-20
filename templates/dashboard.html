@@ -87,6 +87,31 @@
     </a>
   </header>
 
+
+  <section class="sx-featured-rocket">
+    <img class="sx-rocket-slide is-active"
+      src="{{ url_for('static', filename='images/rocket-feature-1.jpg') }}" alt="Rocket on launch pad">
+    <img class="sx-rocket-slide"
+      src="{{ url_for('static', filename='images/rocket-feature-2.jpg') }}" alt="Rocket at sunset">
+    <div class="sx-rocket-caption">
+      <span>FEATURED</span>
+      <h2>GLOBAL INTELLIGENCE NETWORK</h2>
+      <p>CONNECTING INVESTORS ACROSS EVERY CONTINENT</p>
+    </div>
+  </section>
+  <script>
+  (() => {
+    const slides = document.querySelectorAll('.sx-rocket-slide');
+    if (slides.length !== 2) return;
+    let i = 0;
+    setInterval(() => {
+      slides[i].classList.remove('is-active');
+      i = (i + 1) % slides.length;
+      slides[i].classList.add('is-active');
+    }, 4000);
+  })();
+  </script>
+
   <div class="sx-ticker" aria-label="Platform activity">
     <div class="sx-ticker-track">
       <span>🚀 SPACE X INVESTMENT — Welcome to your dashboard</span>
