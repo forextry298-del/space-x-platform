@@ -26,13 +26,13 @@
 
     {% block content %}{% endblock %}
 
-    {% if request.endpoint not in ['login', 'register'] %}
-      {% include "_bottom_nav.html" %}
-    {% endif %}
 
     {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai', 'transactions'] %}
     </section>
     {% endif %}
   </main>
+  {% if request.endpoint not in ['login', 'register'] %}
+    {% include "_bottom_nav.html" %}
+  {% endif %}
 </body>
 </html>
