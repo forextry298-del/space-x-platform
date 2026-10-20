@@ -1246,3 +1246,29 @@ body > main.page-shell {
     font-size: 12px !important;
   }
 }
+
+/* Navigation alignment fix: works inside or outside main */
+html body nav.sx-bottom-nav {
+  position: fixed !important;
+  inset: auto 0 0 0 !important;
+  width: 100vw !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  justify-content: stretch !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+html body nav.sx-bottom-nav > a {
+  width: 100% !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
