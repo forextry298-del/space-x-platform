@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Transaction History | Space X{% endblock %}
+{% block content %}
+<div class="tx-page">
+  <header class="tx-header">
+    <a href="{{ url_for('dashboard') }}" aria-label="Back">‹</a>
+    <h1>Transaction History</h1>
+    <span></span>
+  </header>
+
+  {% if transactions %}
+    <div class="tx-list">
+      {% for tx in transactions %}
+        <article class="tx-card">
+          <div class="tx-icon">↗</div>
+          <div class="tx-info">
+            <strong>{{ tx.title }}</strong>
+            <small>{{ tx.created_at or 'Date unavailable' }}</small>
+            {% if tx.details %}
+              <small>{{ tx.details }}</small>
+            {% endif %}
+          </div>
+          <div class="tx-amount">
+            <strong>{{ "{:,.2f}".format(tx.amount or 0) }} UGX</strong>
+            <small class="tx-status {{ tx.status }}">{{ tx.status|title }}</small>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="tx-empty">
+      <div class="tx-empty-icon">↔</div>
+      <p>No current transaction</p>
+    </div>
+  {% endif %}
+
+  {% include "_bottom_nav.html" %}
+</div>
+
+<style>
+.page-shell:has(.tx-page){display:block!important;width:100%!important;max-width:none!important;min-height:100vh!important;margin:0!important;padding:0!important;background:#000!important;background-image:none!important}
+.tx-page{min-height:100vh;background:#000;color:#fff;padding:0 0 80px;font-family:Arial,sans-serif}
+.tx-header{height:56px;display:grid;grid-template-columns:35px 1fr 35px;align-items:center;padding:0 14px;border-bottom:1px solid #171717}
+.tx-header a{font-size:32px;color:#fff;text-decoration:none;line-height:1}
+.tx-header h1{font-size:18px;text-align:center;margin:0;font-weight:700}
+.tx-list{padding:12px}
+.tx-card{display:flex;align-items:center;gap:11px;padding:14px 0;border-bottom:1px solid #202020}
+.tx-icon{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;background:#071d2b;color:#08aaf0;font-size:23px}
+.tx-info{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+.tx-info strong{font-size:14px;overflow-wrap:anywhere}
+.tx-info small,.tx-amount small{font-size:11px;color:#999}
+.tx-amount{text-align:right;display:flex;flex-direction:column;gap:6px}
+.tx-amount strong{font-size:12px;white-space:nowrap}
+.tx-status{color:#aaa!important}
+.tx-status.paid{color:#24cf83!important}
+.tx-status.pending{color:#f2bd52!important}
+.tx-status.cancelled{color:#ef6868!important}
+.tx-empty{min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#999}
+.tx-empty-icon{width:64px;height:64px;border:1px solid #222;border-radius:50%;display:grid;place-items:center;font-size:32px;color:#555}
+.tx-empty p{font-size:14px;margin-top:15px}
+
+/* Compact transaction history */
+.tx-page{padding-bottom:68px!important}
+.tx-header{height:46px!important;padding:0 10px!important}
+.tx-header h1{font-size:15px!important}
+.tx-header a{font-size:27px!important}
+.tx-list{padding:5px 10px!important}
+.tx-card{gap:8px!important;padding:9px 0!important}
+.tx-icon{width:34px!important;height:34px!important;font-size:19px!important}
+.tx-info{gap:3px!important}
+.tx-info strong{font-size:12px!important}
+.tx-info small,.tx-amount small{font-size:10px!important}
+.tx-amount strong{font-size:11px!important}
+.tx-empty{min-height:55vh!important}
+.tx-empty-icon{width:48px!important;height:48px!important;font-size:25px!important}
+.tx-empty p{font-size:12px!important;margin-top:10px!important}
+.tx-page nav.sx-bottom-nav{position:fixed!important;display:grid!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;width:100%!important;margin:0!important;z-index:99999!important;background:#000!important;transform:none!important}
+
+</style>
+{% endblock %}

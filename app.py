@@ -159,6 +159,38 @@ def income():
         return redirect(url_for("login"))
     return render_template("income.html")
 
+@app.route("/transactions")
+def transactions():
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    with db() as c:
+        purchases = c.execute(
+            """SELECT machine_code AS title, price AS amount,
+                      status, purchased_at AS created_at,
+                      payment_source AS details
+               FROM machine_purchases
+               WHERE user_id = ?""",
+            (session["uid"],)
+        ).fetchall()
+
+        claims = c.execute(
+            """SELECT 'Salary claim' AS title, amount,
+                      'paid' AS status, claimed_at AS created_at,
+                      salary_month AS details
+               FROM salary_claims
+               WHERE user_id = ?""",
+            (session["uid"],)
+        ).fetchall()
+
+    records = sorted(
+        [dict(r) for r in purchases] + [dict(r) for r in claims],
+        key=lambda r: r.get("created_at") or "",
+        reverse=True
+    )
+    return render_template("transactions.html", transactions=records)
+
+
 @app.route("/profile")
 def profile():
     from datetime import date, timedelta
