@@ -413,6 +413,38 @@ def purchase_machine(machine_code):
 
     return redirect(url_for("machine_detail", machine_code=machine_code))
 
+
+@app.route("/api/exchange-rate")
+def exchange_rate():
+    import json
+    from urllib.request import Request, urlopen
+    from datetime import datetime, timezone
+
+    url = "https://open.er-api.com/v6/latest/USD"
+    try:
+        req = Request(url, headers={"User-Agent": "SpaceXPlatform/1.0"})
+        with urlopen(req, timeout=8) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        rate = data.get("rates", {}).get("UGX")
+        if data.get("result") != "success" or not rate:
+            raise ValueError("Exchange rate unavailable")
+        return {
+            "base": "USD",
+            "target": "UGX",
+            "rate": rate,
+            "message": f"Live exchange rate: $1 USD = UGX {rate:,.2f}",
+            "updated_at": data.get("time_last_update_utc") or datetime.now(timezone.utc).isoformat()
+        }
+    except Exception:
+        app.logger.exception("Exchange-rate lookup failed")
+        return {
+            "base": "USD",
+            "target": "UGX",
+            "rate": None,
+            "message": "USD/UGX exchange rate temporarily unavailable",
+            "updated_at": None
+        }, 503
+
 @app.route("/logout")
 def logout(): session.clear(); return redirect(url_for("login"))
 if __name__=="__main__": app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)))

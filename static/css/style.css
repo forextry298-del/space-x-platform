@@ -978,3 +978,28 @@ body::before {
 .sx-actions a.sx-withdraw:hover {
   background: linear-gradient(135deg, #00e676, #00b84a) !important;
 }
+
+/* USD / UGX live exchange-rate message */
+.sx-exchange-rate {
+  margin: 14px 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,190,255,.38);
+  border-radius: 15px;
+  background: rgba(3,22,38,.88);
+  color: #eaf8ff;
+  box-shadow: 0 0 18px rgba(0,190,255,.08);
+}
+.sx-exchange-rate strong {
+  color: #61d8ff;
+  font-size: 11px;
+  letter-spacing: 1.3px;
+}
+.sx-exchange-rate p {
+  margin: 8px 0 4px;
+  font-size: 21px;
+  font-weight: 800;
+}
+.sx-exchange-rate small {
+  color: #a9c5d5;
+  overflow-wrap: anywhere;
+}

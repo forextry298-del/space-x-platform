@@ -112,6 +112,35 @@
   })();
   </script>
 
+
+  <section class="sx-exchange-rate" aria-live="polite">
+    <div><strong>USD / UGX EXCHANGE RATE</strong>
+      <p id="sx-exchange-rate">Loading live exchange rate...</p>
+      <small id="sx-exchange-updated">Checking latest update</small>
+    </div>
+  </section>
+  <script>
+  (() => {
+    const rate = document.getElementById('sx-exchange-rate');
+    const updated = document.getElementById('sx-exchange-updated');
+    async function refreshRate() {
+      try {
+        const response = await fetch('/api/exchange-rate', {cache: 'no-store'});
+        const data = await response.json();
+        if (!response.ok || !data.rate) throw new Error('Rate unavailable');
+        rate.textContent = '$1.00 = UGX ' +
+          Number(data.rate).toLocaleString('en-US', {maximumFractionDigits: 2});
+        updated.textContent = 'Last updated: ' + data.updated_at;
+      } catch (e) {
+        rate.textContent = 'Exchange rate temporarily unavailable';
+        updated.textContent = 'Please try again later';
+      }
+    }
+    refreshRate();
+    setInterval(refreshRate, 15 * 60 * 1000);
+  })();
+  </script>
+
   <div class="sx-ticker" aria-label="Platform activity">
     <div class="sx-ticker-track">
       <span>🚀 SPACE X INVESTMENT — Welcome to your dashboard</span>
