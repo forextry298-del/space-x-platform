@@ -303,12 +303,12 @@ def claim_salary():
         """, (session["uid"], start, end, start, end, session["uid"])).fetchone()
 
         qualifying_count = row["qualifying_count"] or 0
-        amount = qualifying_count * 3000
+        amount = round(qualifying_count * 0.7211, 2)
 
-        if amount <= 6000:
+        if amount <= 1.44:
             con.rollback()
             flash(
-                "You are not eligible. Your qualifying salary must be greater than UGX 6,000.",
+                "You are not eligible. Your qualifying salary must be greater than $1.44 USD.",
                 "error"
             )
             return redirect(url_for("profile"))
@@ -325,7 +325,7 @@ def claim_salary():
         """, (amount, session["uid"]))
 
         con.commit()
-        flash(f"Salary of UGX {amount:,.0f} credited to your Balance.", "success")
+        flash(f"Salary of ${amount:,.2f} USD credited to your Balance.", "success")
     except sqlite3.IntegrityError:
         con.rollback()
         flash("You have already claimed salary for this month.", "error")
