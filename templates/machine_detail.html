@@ -10,9 +10,9 @@
       <small>{{ machine.series }}</small>
       <h1>{{ name }}</h1>
       <p><span>Lock period</span><b>{{ machine.days }} Days</b></p>
-      <p><span>Price</span><b>{{ "{:,.2f}".format(machine.price) }} UGX</b></p>
-      <p><span>Daily income</span><b>{{ "{:,.2f}".format(machine.daily) }} UGX</b></p>
-      <p><span>Total projected income</span><b>{{ "{:,.2f}".format(total_income) }} UGX</b></p>
+      <p><span>Price</span><b>{{ "{:,.2f}".format(machine.price) }} USD</b></p>
+      <p><span>Daily income</span><b>{{ "{:,.2f}".format(machine.daily) }} USD</b></p>
+      <p><span>Total projected income</span><b>{{ "{:,.2f}".format(total_income) }} USD</b></p>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}

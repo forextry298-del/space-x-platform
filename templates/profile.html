@@ -3,21 +3,21 @@
 {% block content %}
 <div class="sx-profile-page">
   <section class="sx-profile-card sx-wallet">
-    <div><span>Wallet</span><strong>{{ "%.2f"|format(wallet) }} UGX</strong></div>
-    <div><span>Balance</span><strong>{{ "%.2f"|format(balance) }} UGX</strong></div>
+    <div><span>Wallet</span><strong>{{ "%.2f"|format(wallet) }} USD</strong></div>
+    <div><span>Balance</span><strong>{{ "%.2f"|format(balance) }} USD</strong></div>
     <button class="sx-wallet-mark" type="button"
       aria-expanded="false" aria-controls="sx-wallet-details"
       onclick="const d=document.getElementById('sx-wallet-details');const open=this.getAttribute('aria-expanded')!=='true';d.hidden=!open;this.setAttribute('aria-expanded',String(open));this.textContent=open?'⌃':'W';">
       W
     </button>
     <div id="sx-wallet-details" class="sx-wallet-details" hidden>
-      <div><span>Deposit</span><strong>0.00 UGX</strong></div>
-      <div><span>Withdraw</span><strong>0.00 UGX</strong></div>
-      <div><span>AI Income</span><strong>0.00 UGX</strong></div>
-      <div><span>Today's earnings</span><strong>0.00 UGX</strong></div>
+      <div><span>Deposit</span><strong>0.00 USD</strong></div>
+      <div><span>Withdraw</span><strong>0.00 USD</strong></div>
+      <div><span>AI Income</span><strong>0.00 USD</strong></div>
+      <div><span>Today's earnings</span><strong>0.00 USD</strong></div>
       <div><span>Invite Count</span><strong>0</strong></div>
       <div><span>Team Count</span><strong>0</strong></div>
-      <div><span>Team income</span><strong>0.00 UGX</strong></div>
+      <div><span>Team income</span><strong>0.00 USD</strong></div>
     </div>
   </section>
 
@@ -52,8 +52,8 @@
   </section>
 
   <section class="sx-profile-card sx-salary">
-    <div><span>Last month's salary</span><strong>{{ "%.2f"|format(last_salary) }} UGX</strong></div>
-    <div><span>This month's salary</span><strong>{{ "%.2f"|format(this_salary) }} UGX</strong></div>
+    <div><span>Last month's salary</span><strong>{{ "%.2f"|format(last_salary) }} USD</strong></div>
+    <div><span>This month's salary</span><strong>{{ "%.2f"|format(this_salary) }} USD</strong></div>
     <form action="{{ url_for('claim_salary') }}" method="post"><button type="submit">Get last month's salary</button></form>
   </section>
 
@@ -83,7 +83,7 @@
         (1000, '54,492,738')
       ] %}
       <div class="sx-reward-row">
-        <span>{{ count }}</span><span>{{ reward }} UGX</span>
+        <span>{{ count }}</span><span>{{ reward }} USD</span>
       </div>
       {% endfor %}
     </div>
