@@ -5,34 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#071321">
   <title>{% block title %}Space X{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') + '?v=20261020_101337' }}">
   <meta name="color-scheme" content="dark">
 </head>
 <body>
   <main class="page-shell{% if request.endpoint == 'dashboard' %} dashboard-shell{% elif request.endpoint == 'income' %} income-shell{% elif request.endpoint == 'profile' %} profile-shell{% elif request.endpoint == 'ai' %} ai-shell{% elif request.endpoint == 'transactions' %} transactions-shell{% endif %}">
-    {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai', 'transactions'] %}
-    <section class="auth-panel">
-      <a class="brand" href="{{ url_for('register') }}">SPACE X</a>
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="messages">
-            {% for category, message in messages %}
-              <p class="message {{ category }}">{{ message }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-    {% endif %}
+{% if request.endpoint not in ['login', 'register'] %}
+  {% include "_bottom_nav.html" %}
+{% endif %}
 
-    {% block content %}{% endblock %}
-
-
-    {% if request.endpoint not in ['dashboard', 'income', 'profile', 'ai', 'transactions'] %}
-    </section>
-    {% endif %}
-  </main>
-  {% if request.endpoint not in ['login', 'register'] %}
-    {% include "_bottom_nav.html" %}
-  {% endif %}
 </body>
 </html>
