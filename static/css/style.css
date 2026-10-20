@@ -810,3 +810,127 @@ nav.sx-bottom-nav > a.active {
 body {
   padding-bottom: 95px !important;
 }
+
+
+/* Repair mobile registration layout */
+body:has(form.auth-form) {
+  overflow-x: hidden !important;
+}
+body:has(form.auth-form) main.page-shell {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 24px 18px !important;
+  box-sizing: border-box !important;
+}
+body:has(form.auth-form) main.page-shell > h1,
+body:has(form.auth-form) main.page-shell > .subtitle,
+body:has(form.auth-form) main.page-shell > form.auth-form,
+body:has(form.auth-form) main.page-shell > .auth-switch {
+  width: 100% !important;
+  max-width: 420px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+body:has(form.auth-form) main.page-shell > h1 {
+  text-align: center !important;
+  font-size: clamp(30px, 8vw, 44px) !important;
+  line-height: 1.15 !important;
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}
+body:has(form.auth-form) main.page-shell > .subtitle,
+body:has(form.auth-form) main.page-shell > .auth-switch {
+  text-align: center !important;
+}
+body:has(form.auth-form) form.auth-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+body:has(form.auth-form) form.auth-form .field,
+body:has(form.auth-form) form.auth-form .captcha-row {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+body:has(form.auth-form) form.auth-form input {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+
+/* Registration: fit the form inside the phone viewport */
+html:has(form.auth-form),
+body:has(form.auth-form) {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+body:has(form.auth-form) main.page-shell {
+  width: 100% !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 10px 16px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+body:has(form.auth-form) main.page-shell > h1 {
+  font-size: clamp(24px, 6vw, 36px) !important;
+  line-height: 1.05 !important;
+  margin: 0 !important;
+}
+body:has(form.auth-form) main.page-shell > .subtitle,
+body:has(form.auth-form) main.page-shell > .auth-switch {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+body:has(form.auth-form) form.auth-form {
+  width: 100% !important;
+  max-width: 380px !important;
+  min-height: 0 !important;
+  margin: 4px auto !important;
+  gap: 7px !important;
+}
+body:has(form.auth-form) form.auth-form .field {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 10px !important;
+}
+body:has(form.auth-form) form.auth-form input {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 7px !important;
+  font-size: 14px !important;
+}
+body:has(form.auth-form) form.auth-form .captcha-row {
+  min-height: 42px !important;
+  height: 42px !important;
+}
+body:has(form.auth-form) form.auth-form .captcha-code {
+  font-size: 20px !important;
+}
+body:has(form.auth-form) form.auth-form .primary-button {
+  min-height: 44px !important;
+  height: 44px !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  font-size: 18px !important;
+}
