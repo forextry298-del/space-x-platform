@@ -65,6 +65,18 @@ with db() as c:
             print("Added missing machine_purchases column:", name)
 
     c.execute("""
+        CREATE TABLE IF NOT EXISTS machine_earnings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            purchase_id INTEGER NOT NULL REFERENCES machine_purchases(id),
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            earning_day INTEGER NOT NULL,
+            amount_usd REAL NOT NULL,
+            created_at TEXT NOT NULL DEFAULT (datetime('now')),
+            UNIQUE(purchase_id, earning_day)
+        )
+    """)
+
+    c.execute("""
         CREATE TABLE IF NOT EXISTS salary_claims (
             id INTEGER PRIMARY KEY,
             user_id INTEGER NOT NULL REFERENCES users(id),
@@ -220,33 +232,61 @@ def ai():
 
 @app.route("/income")
 def income():
+    from datetime import datetime, date
+
     if "uid" not in session:
         return redirect(url_for("login"))
 
-    totals = {1: 0.0, 2: 0.0, 3: 0.0}
+    now = datetime.now()
+    today = date.today()
+    machines = []
+
     with db() as c:
-        rows = c.execute("""
-            SELECT referral_level, COALESCE(SUM(amount_usd), 0) AS total
-            FROM referral_commissions
-            WHERE beneficiary_user_id=?
-            GROUP BY referral_level
-        """, (session["uid"],)).fetchall()
-        history = c.execute("""
-            SELECT referral_level, amount_usd, created_at
-            FROM referral_commissions
-            WHERE beneficiary_user_id=?
-            ORDER BY created_at DESC LIMIT 50
+        purchases = c.execute("""
+            SELECT id, machine_code, purchased_at
+            FROM machine_purchases
+            WHERE user_id=? AND status='successful'
+            ORDER BY id DESC
         """, (session["uid"],)).fetchall()
 
-    for row in rows:
-        if row["referral_level"] in totals:
-            totals[row["referral_level"]] = float(row["total"] or 0)
+        for purchase in purchases:
+            item = MACHINE_CATALOG.get(purchase["machine_code"])
+            if not item:
+                continue
 
-    return render_template(
-        "income.html", lv1_total=totals[1],
-        lv2_total=totals[2], lv3_total=totals[3],
-        total_commission=sum(totals.values()), commissions=history
-    )
+            series, duration, price, daily, image = item
+            try:
+                purchased = datetime.fromisoformat(
+                    str(purchase["purchased_at"]).replace("Z", "+00:00")
+                )
+                if purchased.tzinfo:
+                    purchased = purchased.replace(tzinfo=None)
+                elapsed = max(0, (today - purchased.date()).days)
+            except (ValueError, TypeError):
+                elapsed = 0
+
+            completed = min(elapsed, duration)
+            status = "Expired" if elapsed >= duration else "Running"
+
+            earned = c.execute("""
+                SELECT COALESCE(SUM(amount_usd), 0)
+                FROM machine_earnings WHERE purchase_id=?
+            """, (purchase["id"],)).fetchone()[0]
+
+            machines.append({
+                "id": purchase["id"],
+                "name": purchase["machine_code"],
+                "series": series,
+                "days": duration,
+                "completed": completed,
+                "daily": daily,
+                "total": round(daily * duration, 2),
+                "earned": round(float(earned or 0), 2),
+                "progress": round(completed * 100 / duration) if duration else 100,
+                "status": status,
+            })
+
+    return render_template("income.html", machines=machines)
 
 @app.route("/transactions")
 def transactions():

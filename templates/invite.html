@@ -31,6 +31,13 @@
     <button class="invite-btn" type="button" onclick="copyText('referralLink')">Copy Referral Link</button>
     <div class="invite-note">Share your referral link with friends so their registrations can be linked to your account.</div>
   </div>
+  <div class="invite-card">
+    <div class="invite-label">TEAM DEPOSIT COMMISSIONS</div>
+    <div class="invite-stat"><span>LV1 · Direct referral</span><strong class="invite-count">10%</strong></div>
+    <div class="invite-stat"><span>LV2 · Second level</span><strong class="invite-count">5%</strong></div>
+    <div class="invite-stat"><span>LV3 · Third level</span><strong class="invite-count">1%</strong></div>
+    <div class="invite-note">Commissions are credited when eligible team deposits are approved. LV1 is your direct referral; LV2 is your referral's referral; LV3 is the third level.</div>
+  </div>
   <a class="invite-btn" href="{{ url_for('my_team') }}">View My Team ({{ team_count }})</a>
 </div>
 <script>

@@ -1,41 +1,44 @@
 {% extends "base.html" %}
 {% block title %}Income | Space X{% endblock %}
 {% block content %}
+<style>
+.sx-income-page{background:#000;color:#f2f6fb;min-height:calc(100vh - 140px);padding:12px 14px 90px;font-family:Arial,sans-serif}
+.sx-machine-card{background:#03090e;border:1px solid #123747;border-radius:20px;padding:18px 15px;margin:12px 0 20px;box-shadow:0 0 12px #00baff0a}
+.sx-machine-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sx-machine-name{font-size:18px;font-weight:700;color:#20caff}
+.sx-machine-series{font-size:12px;color:#9aafc1;margin-top:7px}
+.sx-running{font-size:11px;color:#20d9ff;border:1px solid #087fa8;border-radius:20px;padding:6px 10px;white-space:nowrap}
+.sx-machine-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;text-align:center;margin:23px 0 15px}
+.sx-machine-stats span{display:block;font-size:12px;color:#aab7c5;margin-bottom:8px}
+.sx-machine-stats strong{font-size:14px;overflow-wrap:anywhere}
+.sx-machine-stats .sx-daily{color:#20caff}
+.sx-progress{height:7px;background:#101c28;border-radius:10px;overflow:hidden;margin:14px 0}
+.sx-progress-fill{height:100%;background:#12bce9;border-radius:10px}
+.sx-machine-note{border:1px solid #123747;border-radius:14px;padding:12px;color:#9eb3c6;font-size:12px;line-height:1.6}
+.sx-machine-empty{color:#888;font-size:15px;margin:22px 0}
+</style>
 <div class="sx-income-page">
-  <h1>Income &amp; Rewards</h1>
-
-  <section class="sx-income-card">
-    <span>Total referral commissions</span>
-    <h2>{{ "%.3f"|format(total_commission) }} USD</h2>
-    <p>Earned from approved deposits by your referral team.</p>
-  </section>
-
-  <div class="sx-income-levels">
-    <section class="sx-income-card">
-      <span>LV1 · 10%</span>
-      <h3>{{ "%.3f"|format(lv1_total) }} USD</h3>
-    </section>
-    <section class="sx-income-card">
-      <span>LV2 · 5%</span>
-      <h3>{{ "%.3f"|format(lv2_total) }} USD</h3>
-    </section>
-    <section class="sx-income-card">
-      <span>LV3 · 1%</span>
-      <h3>{{ "%.3f"|format(lv3_total) }} USD</h3>
-    </section>
-  </div>
-
-  <h2>Commission history</h2>
-  {% if commissions %}
-    {% for item in commissions %}
-      <div class="sx-income-card">
-        <strong>LV{{ item.referral_level }} commission</strong>
-        <span>+{{ "%.3f"|format(item.amount_usd) }} USD</span>
-        <small>{{ item.created_at }}</small>
-      </div>
+  {% if machines %}
+    {% for machine in machines %}
+      <section class="sx-machine-card">
+        <div class="sx-machine-head">
+          <div>
+            <div class="sx-machine-name">{{ machine.name }}</div>
+            <div class="sx-machine-series">{{ machine.series }}</div>
+          </div>
+          <span class="sx-running">Running</span>
+        </div>
+        <div class="sx-machine-stats">
+          <div><span>Daily</span><strong class="sx-daily">{{ "%.2f"|format(machine.daily) }}</strong></div>
+          <div><span>Days</span><strong>0/{{ machine.days }}</strong></div>
+          <div><span>Total</span><strong>{{ "%.2f"|format(machine.total) }}</strong></div>
+        </div>
+        <div class="sx-progress"><div class="sx-progress-fill" style="width:0%"></div></div>
+        <div class="sx-machine-note">Next income schedule will appear here.</div>
+      </section>
     {% endfor %}
   {% else %}
-    <p class="sx-income-empty">No referral commissions have been credited yet. Commissions appear here after qualifying deposits are approved.</p>
+    <p class="sx-machine-empty">No machines yet. Purchase one from the AI tab.</p>
   {% endif %}
 </div>
 {% endblock %}
