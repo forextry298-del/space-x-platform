@@ -1125,3 +1125,54 @@ body:has(form.auth-form) .auth-switch a {
     justify-content: flex-start !important;
   }
 }
+
+/* Screenshot-matched Space X bottom navigation */
+nav.sx-bottom-nav {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom)) !important;
+  margin: 0 !important;
+  background: #000 !important;
+  border-top: 1px solid #171717 !important;
+  box-shadow: none !important;
+  z-index: 999999 !important;
+}
+nav.sx-bottom-nav > a {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  padding: 3px 0 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  text-align: center !important;
+  min-width: 0 !important;
+}
+nav.sx-bottom-nav .sx-nav-icon {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 28px !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+nav.sx-bottom-nav > a small {
+  display: block !important;
+  color: inherit !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+nav.sx-bottom-nav > a.active {
+  color: #08baff !important;
+}
