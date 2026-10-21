@@ -95,6 +95,18 @@ with db() as c:
         )
     """)
 
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS referral_commissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            deposit_id INTEGER NOT NULL REFERENCES deposit_requests(id),
+            beneficiary_user_id INTEGER NOT NULL REFERENCES users(id),
+            referral_level INTEGER NOT NULL,
+            amount_usd REAL NOT NULL,
+            created_at REAL NOT NULL,
+            UNIQUE(deposit_id, beneficiary_user_id, referral_level)
+        )
+    """)
+
 @app.route("/")
 def index(): return redirect(url_for("register"))
 @app.route("/register", methods=["GET","POST"])
@@ -138,8 +150,8 @@ def register():
 
                     c.execute(
                         """INSERT INTO users
-                           (phone, password_hash, referred_by, created_at)
-                           VALUES (?, ?, ?, datetime('now'))""",
+                           (phone, password_hash, balance, referred_by, created_at)
+                           VALUES (?, ?, 1.63, ?, datetime('now'))""",
                         (phone, generate_password_hash(pw),
                          inviter["id"] if inviter else None)
                     )
@@ -152,6 +164,14 @@ def register():
                         "UPDATE users SET referral_code=? WHERE id=?",
                         (referral_code, new_id)
                     )
+
+                    if inviter:
+                        c.execute(
+                            """UPDATE users
+                               SET balance = COALESCE(balance, 0) + 0.001
+                               WHERE id = ?""",
+                            (inviter["id"],)
+                        )
 
                 flash("Account created. Please log in.", "success")
                 return redirect(url_for("login"))
@@ -581,6 +601,24 @@ def deposit_instructions(deposit_id):
         deposit=dict(row), can_submit=can_submit)
 
 
+
+
+@app.route("/admin/login", methods=["GET","POST"])
+def admin_login():
+    token = os.environ.get("ADMIN_TOKEN", "")
+    if not token:
+        return "ADMIN_TOKEN is not configured.", 503
+    if request.method == "POST":
+        if secrets.compare_digest(request.form.get("token",""), token):
+            session["space_x_admin"] = True
+            return redirect(url_for("admin_deposits"))
+        flash("Invalid admin token.", "error")
+    return render_template_string("""
+    <h2>Admin login</h2>
+    <form method="post">
+    <input type="password" name="token" required>
+    <button type="submit">Login</button></form>
+    """)
 
 @app.route("/invite")
 def invite():
