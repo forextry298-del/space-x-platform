@@ -1,0 +1,12 @@
+services:
+  - type: cron
+    name: space-x-daily-earnings
+    runtime: python
+    schedule: "5 0 * * *"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: 'python -c "import os,urllib.request; u=os.environ[\"SPACE_X_URL\"].rstrip(\"/\")+\"/internal/daily-earnings\"; r=urllib.request.Request(u,method=\"POST\",headers={\"Authorization\":\"Bearer \"+os.environ[\"EARNINGS_CRON_SECRET\"]}); print(urllib.request.urlopen(r,timeout=60).read().decode())"'
+    envVars:
+      - key: SPACE_X_URL
+        sync: false
+      - key: EARNINGS_CRON_SECRET
+        sync: false

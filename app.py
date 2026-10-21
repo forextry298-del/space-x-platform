@@ -230,6 +230,68 @@ def ai():
     return render_template("ai.html", machines=machines)
 
 
+def process_daily_machine_earnings():
+    from datetime import date, datetime
+
+    today = date.today()
+    credited = 0
+
+    with db() as c:
+        purchases = c.execute("""
+            SELECT id, user_id, machine_code, purchased_at
+            FROM machine_purchases WHERE status='successful'
+        """).fetchall()
+
+        for p in purchases:
+            item = MACHINE_CATALOG.get(p["machine_code"])
+            if not item or not p["purchased_at"]:
+                continue
+
+            _, duration, _, daily, _ = item
+            try:
+                bought = datetime.fromisoformat(
+                    str(p["purchased_at"]).replace("Z", "+00:00")
+                ).date()
+            except (ValueError, TypeError):
+                continue
+
+            days = min(duration, max(0, (today - bought).days + 1))
+            for day in range(1, days + 1):
+                cur = c.execute("""
+                    INSERT OR IGNORE INTO machine_earnings
+                    (purchase_id, user_id, earning_day, amount_usd)
+                    VALUES (?, ?, ?, ?)
+                """, (p["id"], p["user_id"], day, daily))
+
+                if cur.rowcount:
+                    c.execute(
+                        "UPDATE users SET balance=balance+? WHERE id=?",
+                        (daily, p["user_id"])
+                    )
+                    credited += 1
+
+    return credited
+
+
+@app.post("/internal/daily-earnings")
+def daily_machine_earnings_job():
+    import hmac
+
+    secret = os.environ.get("EARNINGS_CRON_SECRET", "")
+    supplied = request.headers.get("Authorization", "")
+    if not secret or not hmac.compare_digest(
+        supplied, "Bearer " + secret
+    ):
+        return "Unauthorized", 401
+
+    try:
+        credited = process_daily_machine_earnings()
+        return {"ok": True, "new_daily_credits": credited}, 200
+    except Exception:
+        app.logger.exception("Daily machine earnings job failed")
+        return {"ok": False}, 500
+
+
 @app.route("/income")
 def income():
     from datetime import datetime, date
