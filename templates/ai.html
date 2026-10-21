@@ -13,26 +13,12 @@
   </nav>
 
   <main class="sx-machine-list">
-    {% set machines = [
-      ('VIP Series','VIP-1','20','21,799.24','2,171.88','x1'),
-      ('VIP Series','VIP-1 PRO','40','32,698.86','3,257.82','x1'),
-      ('VIP Series','VIP-2','20','54,498.10','5,992.78','x2'),
-      ('VIP Series','VIP-2 PRO','40','54,498.10','5,429.70','x2'),
-      ('A Series','A-1 Plus','16','20,110.00','2,011.00','x1'),
-      ('A Series','A-1','16','32,698.86','3,257.82','x1'),
-      ('A Series','A-2','16','80,440.00','8,044.00','x1'),
-      ('CS series','CS-1','30','59,927.80','35,956.68','x1'),
-      ('CS series','CS-2','30','179,823.62','119,895.82','x2'),
-      ('CS series','CS-3','30','539,470.86','395,603.92','x3'),
-      ('N series','N-1','20','54,498.10','20,110.00','x1'),
-      ('N series','N-2','20','163,494.30','60,330.00','x2'),
-      ('N series','N-3','20','490,442.68','120,660.00','x3'),
-      ('K series','K-1 MAX','3','108,996.20','54,498.10','x1'),
-      ('K series','K-3 MAX','3','402,200.00','201,100.00','x3'),
-      ('K series','K-4 MAX','3','603,300.00','269,474.00','x3'),
-      ('K series','K-5 MAX','3','804,400.00','337,848.00','x3')
-    ] %}
-    {% for series, name, days, price, daily, quantity in machines %}
+    {% for machine in machines %}
+    {% set series = machine.series %}
+    {% set name = machine.name %}
+    {% set days = machine.days %}
+    {% set price = "%.2f"|format(machine.price) %}
+    {% set daily = "%.2f"|format(machine.daily) %}
     <article class="sx-machine-card"
       data-machine-series="{{ series }}"
       onclick="window.location.href='{{ url_for('machine_detail', machine_code=name) }}'"
@@ -41,42 +27,42 @@
       <div class="sx-machine-image">
         {% if name in ['VIP-1', 'VIP-1 PRO'] %}
         <img src="{{ url_for('static', filename='images/vip1-space-x.png') }}"
-             alt="Space X {{ name }}" class="sx-machine-photo">
+             alt="Space X {{ name }}" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'VIP-2' %}
         <img src="{{ url_for('static', filename='images/vip2-tesla.png') }}"
-             alt="Tesla for VIP-2" class="sx-machine-photo">
+             alt="Tesla for VIP-2" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'VIP-2 PRO' %}
         <img src="{{ url_for('static', filename='images/vip2-pro-tesla.png') }}"
-             alt="Flying Tesla for VIP-2 PRO" class="sx-machine-photo">
+             alt="Flying Tesla for VIP-2 PRO" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'CS-1' %}
-        <img src="{{ url_for('static', filename='images/cs1-rocket.png') }}" alt="CS-1 rocket" class="sx-machine-photo">
+        <img src="{{ url_for('static', filename='images/cs1-rocket.png') }}" alt="CS-1 rocket" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'CS-2' %}
-        <img src="{{ url_for('static', filename='images/cs2-rocket.png') }}" alt="CS-2 rocket" class="sx-machine-photo">
+        <img src="{{ url_for('static', filename='images/cs2-rocket.png') }}" alt="CS-2 rocket" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'CS-3' %}
-        <img src="{{ url_for('static', filename='images/cs3-rocket.png') }}" alt="CS-3 rocket" class="sx-machine-photo">
+        <img src="{{ url_for('static', filename='images/cs3-rocket.png') }}" alt="CS-3 rocket" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'N-1' %}
-        <img src="{{ url_for('static', filename='images/n1-satellite.png') }}" alt="N-1 satellite" class="sx-machine-photo">
+        <img src="{{ url_for('static', filename='images/n1-satellite.png') }}" alt="N-1 satellite" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'N-2' %}
-        <img src="{{ url_for('static', filename='images/n2-rocket-satellite.png') }}" alt="N-2 rocket and satellite" class="sx-machine-photo">
+        <img src="{{ url_for('static', filename='images/n2-rocket-satellite.png') }}" alt="N-2 rocket and satellite" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'N-3' %}
-        <img src="{{ url_for('static', filename='images/n3-satellite-explosion.png') }}" alt="N-3 satellite explosion" class="sx-machine-photo">
+        <img src="{{ url_for('static', filename='images/n3-satellite-explosion.png') }}" alt="N-3 satellite explosion" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'K-1 MAX' %}
-        <img src="{{ url_for('static', filename='images/k1-moon-rocket.jpg') }}" alt="K-1 MAX rocket on the Moon" class="sx-machine-photo" loading="eager" fetchpriority="high" decoding="async">
+        <img src="{{ url_for('static', filename='images/k1-moon-rocket.jpg') }}" alt="K-1 MAX rocket on the Moon" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'K-3 MAX' %}
-        <img src="{{ url_for('static', filename='images/k2-jupiter-rocket.jpg') }}" alt="K-3 MAX rocket near Jupiter" class="sx-machine-photo" loading="eager" decoding="async">
+        <img src="{{ url_for('static', filename='images/k2-jupiter-rocket.jpg') }}" alt="K-3 MAX rocket near Jupiter" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'K-4 MAX' %}
-        <img src="{{ url_for('static', filename='images/k3-black-hole-rocket.jpg') }}" alt="K-4 MAX rocket near a black hole" class="sx-machine-photo" loading="eager" decoding="async">
+        <img src="{{ url_for('static', filename='images/k3-black-hole-rocket.jpg') }}" alt="K-4 MAX rocket near a black hole" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'K-5 MAX' %}
-        <img src="{{ url_for('static', filename='images/k4-universe-rocket.jpg') }}" alt="K-5 MAX rocket in the universe" class="sx-machine-photo" loading="eager" decoding="async">
+        <img src="{{ url_for('static', filename='images/k4-universe-rocket.jpg') }}" alt="K-5 MAX rocket in the universe" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'A-1 Plus' %}
         <img src="{{ url_for('static', filename='images/a1-plus-rocket.png') }}"
-             alt="A-1 Plus rocket" class="sx-machine-photo">
+             alt="A-1 Plus rocket" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'A-1' %}
         <img src="{{ url_for('static', filename='images/a1-rocket.jpg') }}"
-             alt="A-1 rocket" class="sx-machine-photo">
+             alt="A-1 rocket" class="sx-machine-photo" loading="lazy" decoding="async">
         {% elif name == 'A-2' %}
         <img src="{{ url_for('static', filename='images/a2-rocket.jpg') }}"
-             alt="A-2 rocket" class="sx-machine-photo">
+             alt="A-2 rocket" class="sx-machine-photo" loading="lazy" decoding="async">
         {% else %}
         <span class="sx-image-placeholder">Machine image</span>
         {% endif %}

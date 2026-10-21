@@ -164,7 +164,18 @@ def dashboard():
 def ai():
     if "uid" not in session:
         return redirect(url_for("login"))
-    return render_template("ai.html")
+    machines = [
+        {
+            "series": item[0],
+            "name": name,
+            "days": item[1],
+            "price": item[2],
+            "daily": item[3],
+            "image": item[4],
+        }
+        for name, item in MACHINE_CATALOG.items()
+    ]
+    return render_template("ai.html", machines=machines)
 
 
 @app.route("/income")
