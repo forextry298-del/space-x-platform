@@ -3,6 +3,7 @@
 {% block content %}
 <div class="wd">
 <h2>‹ Withdraw</h2>
+{% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="wd-message {{ category }}" role="alert">{{ message }}</div>{% endfor %}{% endwith %}
 <form method="post">
 <label>Choose network</label>
 <select name="network" required>
@@ -20,14 +21,14 @@
 </form>
 </div>
 <style>
-.wd{background:#000;color:#fff;min-height:100vh;padding:18px;font-family:Arial}
-.wd h2{font-size:20px;margin:8px 0 28px}
-.wd form{display:flex;flex-direction:column;gap:12px}
-.wd label{color:#bbb;font-size:13px;margin-top:8px}
-.wd input,.wd select{padding:15px;background:#111;color:white;border:1px solid #333;border-radius:7px;font-size:15px}
-.receive{padding:18px;background:#171717;border-radius:7px;display:flex;justify-content:space-between}
-.wd button{padding:15px;border:0;border-radius:7px;font-weight:bold}
-.wd p{color:#aaa;font-size:12px}
+.wd{background:#000;color:#fff;min-height:100vh;padding:28px 24px 40px;font-family:Arial;max-width:650px;margin:0 auto}
+.wd h2{font-size:30px;margin:12px 0 38px}
+.wd form{display:flex;flex-direction:column;gap:18px}
+.wd label{color:#bbb;font-size:18px;margin-top:12px}
+.wd input,.wd select{box-sizing:border-box;width:100%;padding:22px 18px;min-height:76px;background:#111;color:white;border:1px solid #333;border-radius:12px;font-size:19px}
+.receive{padding:26px 20px;background:#171717;border-radius:12px;display:flex;justify-content:space-between;gap:12px;font-size:20px;flex-wrap:wrap}
+.wd button{padding:22px 18px;min-height:76px;border:0;border-radius:12px;font-size:20px;font-weight:bold;width:100%;cursor:pointer}
+.wd p{color:#aaa;font-size:15px;line-height:1.5}.wd .wd-message{padding:16px;margin:0 0 20px;border-radius:10px;color:#ff4444;background:#251010;border:1px solid #a52a2a;font-size:17px;font-weight:bold}.wd .wd-message.success{color:#22c55e;background:#0b2113;border-color:#16783b}
 </style>
 <script>
 let rate=null;
