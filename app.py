@@ -383,8 +383,18 @@ def transactions():
             (session["uid"],)
         ).fetchall()
 
+        withdrawals = c.execute("""
+            SELECT 'Mobile Money Withdrawal' AS title,
+                   amount_usd AS amount, status,
+                   datetime(created_at, 'unixepoch') AS created_at,
+                   network || ' - ' || recipient_phone ||
+                   ' - UGX ' || printf('%.2f', amount_ugx) AS details
+            FROM withdrawal_requests
+            WHERE user_id = ?
+        """, (session["uid"],)).fetchall()
+
     records = sorted(
-        [dict(r) for r in purchases] + [dict(r) for r in claims] + [dict(r) for r in deposits],
+        [dict(r) for r in purchases] + [dict(r) for r in claims] + [dict(r) for r in deposits] + [dict(r) for r in withdrawals],
         key=lambda r: r.get("created_at") or "",
         reverse=True
     )
@@ -631,6 +641,50 @@ def exchange_rate():
             "updated_at": None
         }, 503
 
+
+
+@app.route("/withdraw", methods=["GET", "POST"])
+def withdraw():
+    import time
+    if "uid" not in session:
+        return redirect(url_for("login"))
+    with db() as c:
+        c.execute("CREATE TABLE IF NOT EXISTS withdrawal_requests (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, network TEXT NOT NULL, recipient_phone TEXT NOT NULL, amount_usd REAL NOT NULL, exchange_rate REAL NOT NULL, amount_ugx REAL NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at REAL NOT NULL)")
+    rate = None
+    try:
+        import json
+        from urllib.request import Request, urlopen
+        req = Request("https://open.er-api.com/v6/latest/USD", headers={"User-Agent":"SpaceXPlatform/1.0"})
+        with urlopen(req, timeout=8) as r:
+            data = json.loads(r.read().decode())
+        if data.get("result") == "success":
+            rate = float(data["rates"]["UGX"])
+    except Exception:
+        app.logger.exception("Withdrawal rate lookup failed")
+    if request.method == "POST":
+        network = request.form.get("network", "").upper()
+        phone = request.form.get("recipient_phone", "").strip()
+        try: amount = round(float(request.form.get("amount_usd", "")), 2)
+        except (ValueError, TypeError): amount = 0
+        if network not in ("MTN", "AIRTEL") or not phone.isdigit() or not 9 <= len(phone) <= 12 or amount < 2 or not rate or rate <= 0:
+            flash("Check the network, phone number, amount and exchange rate.", "error")
+        else:
+            with db() as c:
+                c.execute("BEGIN IMMEDIATE")
+                user = c.execute("SELECT balance FROM users WHERE id=?", (session["uid"],)).fetchone()
+                reserved = c.execute("SELECT COALESCE(SUM(amount_usd),0) FROM withdrawal_requests WHERE user_id=? AND status='pending'", (session["uid"],)).fetchone()[0]
+                available = float(user["balance"] or 0) - float(reserved or 0)
+                if amount > available:
+                    flash("Insufficient available balance.", "error")
+                else:
+                    c.execute("INSERT INTO withdrawal_requests (user_id,network,recipient_phone,amount_usd,exchange_rate,amount_ugx,status,created_at) VALUES (?,?,?,?,?,?, 'pending',?)", (session["uid"],network,phone,amount,rate,round(amount*rate,2),time.time()))
+                    flash("Withdrawal request submitted. Status: Pending.", "success")
+                    return redirect(url_for("transactions"))
+    with db() as c:
+        user = c.execute("SELECT balance FROM users WHERE id=?", (session["uid"],)).fetchone()
+        reserved = c.execute("SELECT COALESCE(SUM(amount_usd),0) FROM withdrawal_requests WHERE user_id=? AND status='pending'", (session["uid"],)).fetchone()[0]
+    available = max(0, float(user["balance"] or 0)-float(reserved or 0))
+    return render_template("withdraw.html", rate=rate, available=available)
 
 
 @app.route("/deposit", methods=["GET", "POST"])

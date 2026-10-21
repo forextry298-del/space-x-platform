@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Withdraw | Space X{% endblock %}
+{% block content %}
+<div class="wd">
+<h2>‹ Withdraw</h2>
+<form method="post">
+<label>Choose network</label>
+<select name="network" required>
+<option value="">Select network</option>
+<option value="MTN">MTN Mobile Money</option>
+<option value="AIRTEL">Airtel Money</option>
+</select>
+<label>Receiving phone number</label>
+<input name="recipient_phone" placeholder="Enter number" required>
+<label>Amount (USD)</label>
+<input id="amount" name="amount_usd" type="number" min="2" step="0.01" required>
+<div class="receive">You will receive <strong id="ugx">UGX 0</strong></div>
+<p id="rate">Getting current exchange rate...</p>
+<button type="submit">Continue</button>
+</form>
+</div>
+<style>
+.wd{background:#000;color:#fff;min-height:100vh;padding:18px;font-family:Arial}
+.wd h2{font-size:20px;margin:8px 0 28px}
+.wd form{display:flex;flex-direction:column;gap:12px}
+.wd label{color:#bbb;font-size:13px;margin-top:8px}
+.wd input,.wd select{padding:15px;background:#111;color:white;border:1px solid #333;border-radius:7px;font-size:15px}
+.receive{padding:18px;background:#171717;border-radius:7px;display:flex;justify-content:space-between}
+.wd button{padding:15px;border:0;border-radius:7px;font-weight:bold}
+.wd p{color:#aaa;font-size:12px}
+</style>
+<script>
+let rate=null;
+fetch('/api/exchange-rate').then(r=>r.json()).then(d=>{
+if(d.rate){rate=Number(d.rate);document.getElementById('rate').textContent=d.message;update();}
+else document.getElementById('rate').textContent='Exchange rate unavailable';
+}).catch(()=>document.getElementById('rate').textContent='Exchange rate unavailable');
+function update(){
+let n=Number(document.getElementById('amount').value)||0;
+document.getElementById('ugx').textContent=rate?'UGX '+(n*rate).toLocaleString('en-UG',{minimumFractionDigits:2,maximumFractionDigits:2}):'Unavailable';
+}
+document.getElementById('amount').addEventListener('input',update);
+</script>
+{% endblock %}
