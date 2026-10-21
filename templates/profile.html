@@ -31,10 +31,10 @@
     <a href="{{ url_for('transactions') }}" class="sx-profile-item">
       <span class="sx-profile-icon"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h8"/></svg></span><span>Transactions</span>
     </a>
-    <a href="#invite" class="sx-profile-item">
+    <a href="{{ url_for('invite') }}" class="sx-profile-item">
       <span class="sx-profile-icon"><svg viewBox="0 0 24 24"><path d="m3 12 5-5 4 3 3-2 6 5-5 5-5-3-3 2z"/><path d="m8 13 4 3 4-3M3 12l-1 6 4 3 4-3m8-8 4 2-1 6-3 2"/></svg></span><span>Invite</span>
     </a>
-    <a href="#team" class="sx-profile-item">
+    <a href="{{ url_for('my_team') }}" class="sx-profile-item">
       <span class="sx-profile-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20v-2a7 7 0 0 1 14 0v2zm14-6a5 5 0 0 1 6 5v1h-4"/></svg></span><span>My team</span>
     </a>
     <a href="#vip" class="sx-profile-item">

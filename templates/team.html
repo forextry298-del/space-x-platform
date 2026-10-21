@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My Team | Space X{% endblock %}
+{% block content %}
+<style>
+.team-page{max-width:640px;margin:auto;padding:22px 16px 100px;color:#f4f7fb;font-family:Arial,sans-serif}
+.team-head{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.team-head a{color:#00c8ff;text-decoration:none;font-size:25px}
+.team-head h2{margin:0;font-size:22px}
+.team-card{background:linear-gradient(145deg,#101c2b,#07111e);border:1px solid #087ca5;border-radius:16px;padding:17px;margin-bottom:13px}
+.team-count{font-size:30px;font-weight:700;color:#00c8ff;margin-top:8px}
+.team-label{font-size:13px;color:#9bb3c8}
+.member{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.member-phone{font-size:15px;font-weight:700;overflow-wrap:anywhere}
+.member-date{font-size:12px;color:#9bb3c8;margin-top:7px}
+.team-empty{text-align:center;padding:28px 12px;color:#9bb3c8;line-height:1.7}
+.team-btn{display:block;text-align:center;text-decoration:none;background:linear-gradient(90deg,#008dff,#00d5ff);color:#001321;padding:13px;border-radius:10px;font-weight:700;margin-top:18px}
+</style>
+<div class="team-page">
+  <div class="team-head">
+    <a href="{{ url_for('invite') }}" aria-label="Back">‹</a>
+    <h2>My Team</h2>
+  </div>
+  <div class="team-card">
+    <div class="team-label">TOTAL INVITED MEMBERS</div>
+    <div class="team-count">{{ members|length }}</div>
+  </div>
+  {% if members %}
+    {% for member in members %}
+      <div class="team-card member">
+        <div>
+          <div class="member-phone">{{ member['phone'] }}</div>
+          <div class="member-date">Joined: {{ member['created_at'] or 'Date unavailable' }}</div>
+        </div>
+        <span style="color:#00c8ff;font-size:13px">Member</span>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="team-card team-empty">
+      <div style="font-size:30px;color:#00c8ff">＋</div>
+      <strong>No team members yet</strong>
+      <div>Share your invitation link to help friends join your team.</div>
+    </div>
+  {% endif %}
+  <a class="team-btn" href="{{ url_for('invite') }}">Invite Friends</a>
+</div>
+{% endblock %}

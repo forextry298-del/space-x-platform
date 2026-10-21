@@ -580,6 +580,58 @@ def deposit_instructions(deposit_id):
     return render_template("deposit_instructions.html",
         deposit=dict(row), can_submit=can_submit)
 
+
+
+@app.route("/invite")
+def invite():
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    with db() as c:
+        user = c.execute(
+            "SELECT id, referral_code FROM users WHERE id=?",
+            (session["uid"],)
+        ).fetchone()
+
+        if not user:
+            session.clear()
+            return redirect(url_for("login"))
+
+        code = user["referral_code"]
+        if not code:
+            code = secrets.token_urlsafe(8).replace("-", "").replace("_", "")[:10]
+            c.execute(
+                "UPDATE users SET referral_code=? WHERE id=?",
+                (code, session["uid"])
+            )
+
+        count = c.execute(
+            "SELECT COUNT(*) FROM users WHERE referred_by=?",
+            (session["uid"],)
+        ).fetchone()[0]
+
+    referral_link = request.host_url.rstrip("/") + url_for("register") + "?ref=" + code
+    return render_template(
+        "invite.html",
+        referral_code=code,
+        referral_link=referral_link,
+        team_count=count
+    )
+
+
+@app.route("/team")
+def my_team():
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    with db() as c:
+        members = c.execute(
+            "SELECT phone, created_at FROM users WHERE referred_by=? ORDER BY id DESC",
+            (session["uid"],)
+        ).fetchall()
+
+    return render_template("team.html", members=members)
+
 @app.route("/logout")
 def logout(): session.clear(); return redirect(url_for("login"))
 if __name__=="__main__": app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)))
