@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Payment Instructions | Space X{% endblock %}
+{% block content %}
+<style>
+.dep{max-width:520px;margin:auto;padding:22px 16px 100px;color:#f4f7fb}
+.card{background:#101a27;border:1px solid #263648;border-radius:18px;padding:20px;margin-top:18px}
+.dep p{color:#b4c2d1;line-height:1.6;font-size:14px}
+.agent{font-size:22px;font-weight:bold;color:white}
+.green{color:#4be2a2}
+.dep label{display:block;margin:15px 0 7px}
+.dep input{box-sizing:border-box;width:100%;padding:13px;border:1px solid #304256;border-radius:10px;background:#07111d;color:white;font-size:16px}
+.dep button{width:100%;padding:15px;margin-top:20px;border:0;border-radius:10px;background:#087df5;color:white;font-weight:bold}
+.dep button:disabled{opacity:.45}
+.dep a{color:#76bdff;text-decoration:none}
+</style>
+<div class="dep">
+<a href="{{ url_for('dashboard') }}">← Dashboard</a>
+<h2>Payment Instructions</h2>
+<div class="card">
+<p>Request #{{ deposit.id }} · {{ deposit.network }}</p>
+<p>Requested amount</p>
+<div class="agent">UGX {{ "{:,.0f}".format(deposit.requested_ugx) }}</div>
+<p>Estimated value: <span class="green">${{ "{:,.2f}".format(deposit.requested_usd) }} USD</span></p>
+<p>Send money to agent:</p>
+<div class="agent">0757837051</div>
+<p>Mary Namara</p>
+{% if deposit.network == 'MTN' %}
+<p>MTN Mobile Money: dial <strong>*165#</strong> and follow the money-transfer instructions.</p>
+{% else %}
+<p>Airtel Money: dial <strong>*185#</strong> and follow the money-transfer instructions.</p>
+{% endif %}
+<p>Keep your transaction ID. Your deposit remains pending until verified.</p>
+<p id="timer" class="green">Checking submission window…</p>
+</div>
+{% if deposit.transaction_id %}
+<div class="card"><p class="green">Submitted for approval</p><p>Status: Pending verification</p></div>
+{% else %}
+<form method="post" class="card">
+<label>Transaction ID</label>
+<input name="transaction_id" maxlength="100" required>
+<label>Amount sent (UGX)</label>
+<input name="paid_ugx" type="number" min="1000" required>
+<label>Number that paid</label>
+<input name="paid_phone" type="tel" required>
+<button id="submit-button" type="submit" {% if not can_submit %}disabled{% endif %}>Submit for Approval</button>
+</form>
+{% endif %}
+</div>
+<script>
+(function(){
+ const start={{ deposit.created_at|int }};
+ const timer=document.getElementById('timer');
+ const button=document.getElementById('submit-button');
+ function tick(){
+  const now=Math.floor(Date.now()/1000);
+  const opens=start+60, expires=start+1800;
+  if(now<opens){
+   timer.textContent='Submission opens in '+(opens-now)+' seconds.';
+   if(button)button.disabled=true;
+  }else if(now<=expires){
+   timer.textContent='Submission closes in '+Math.floor((expires-now)/60)+'m '+((expires-now)%60)+'s.';
+   if(button)button.disabled=false;
+  }else{
+   timer.textContent='The 30-minute submission window has expired.';
+   if(button)button.disabled=true;
+  }
+ }
+ tick();setInterval(tick,1000);
+})();
+</script>
+{% endblock %}

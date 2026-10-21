@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Deposit | Space X{% endblock %}
+{% block content %}
+<style>
+.dep{max-width:520px;margin:auto;padding:22px 16px 100px;color:#f4f7fb}
+.card{background:#101a27;border:1px solid #263648;border-radius:18px;padding:20px;margin-top:18px}
+.dep label{display:block;margin:17px 0 8px}
+.dep input,.dep select{box-sizing:border-box;width:100%;padding:14px;border:1px solid #304256;border-radius:11px;background:#07111d;color:white;font-size:16px}
+.dep button{width:100%;margin-top:22px;padding:15px;border:0;border-radius:11px;background:#087df5;color:white;font-weight:bold}
+.dep p{color:#b4c2d1;line-height:1.5;font-size:14px}
+.dep .usd{color:#4be2a2;background:#07111d;padding:14px;border-radius:10px}
+.dep a{color:#76bdff;text-decoration:none}
+</style>
+<div class="dep">
+<a href="{{ url_for('dashboard') }}">← Back</a>
+<h2>Deposit</h2>
+<p>Select a network, enter your sending number and amount.</p>
+<form method="post" class="card">
+<label>Network</label>
+<select name="network" required>
+<option value="">Choose network</option>
+<option value="MTN">MTN Mobile Money</option>
+<option value="AIRTEL">Airtel Money</option>
+</select>
+<label>Number sending money</label>
+<input name="sender_phone" type="tel" placeholder="07XXXXXXXX" required>
+<label>Amount in UGX</label>
+<input id="amount" name="amount_ugx" type="number" min="1000" step="100" required>
+<div class="usd" id="usd">Equivalent in USD: loading rate…</div>
+<p id="rate-note">USD value is an estimate.</p>
+<button type="submit">Continue</button>
+</form>
+</div>
+<script>
+(async()=>{
+ let rate=null;
+ const out=document.getElementById('usd');
+ try{
+  const r=await fetch('{{ url_for("exchange_rate") }}');
+  const d=await r.json();
+  if(!r.ok||!d.rate)throw Error();
+  rate=Number(d.rate);
+  document.getElementById('rate-note').textContent=d.message;
+ }catch(e){out.textContent='Exchange rate unavailable';}
+ function update(){
+  const n=Number(document.getElementById('amount').value);
+  out.textContent=rate&&n>0?'Equivalent in USD: $'+(n/rate).toFixed(2):'Equivalent in USD: —';
+ }
+ document.getElementById('amount').addEventListener('input',update);
+ update();
+})();
+</script>
+{% endblock %}
