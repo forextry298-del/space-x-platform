@@ -222,7 +222,31 @@ def ai():
 def income():
     if "uid" not in session:
         return redirect(url_for("login"))
-    return render_template("income.html")
+
+    totals = {1: 0.0, 2: 0.0, 3: 0.0}
+    with db() as c:
+        rows = c.execute("""
+            SELECT referral_level, COALESCE(SUM(amount_usd), 0) AS total
+            FROM referral_commissions
+            WHERE beneficiary_user_id=?
+            GROUP BY referral_level
+        """, (session["uid"],)).fetchall()
+        history = c.execute("""
+            SELECT referral_level, amount_usd, created_at
+            FROM referral_commissions
+            WHERE beneficiary_user_id=?
+            ORDER BY created_at DESC LIMIT 50
+        """, (session["uid"],)).fetchall()
+
+    for row in rows:
+        if row["referral_level"] in totals:
+            totals[row["referral_level"]] = float(row["total"] or 0)
+
+    return render_template(
+        "income.html", lv1_total=totals[1],
+        lv2_total=totals[2], lv3_total=totals[3],
+        total_commission=sum(totals.values()), commissions=history
+    )
 
 @app.route("/transactions")
 def transactions():

@@ -2,9 +2,40 @@
 {% block title %}Income | Space X{% endblock %}
 {% block content %}
 <div class="sx-income-page">
-  <h1>Income</h1>
-  <p class="sx-income-empty">No machines yet. Purchase one from the AI tab.</p>
+  <h1>Income &amp; Rewards</h1>
 
+  <section class="sx-income-card">
+    <span>Total referral commissions</span>
+    <h2>{{ "%.3f"|format(total_commission) }} USD</h2>
+    <p>Earned from approved deposits by your referral team.</p>
+  </section>
 
+  <div class="sx-income-levels">
+    <section class="sx-income-card">
+      <span>LV1 · 10%</span>
+      <h3>{{ "%.3f"|format(lv1_total) }} USD</h3>
+    </section>
+    <section class="sx-income-card">
+      <span>LV2 · 5%</span>
+      <h3>{{ "%.3f"|format(lv2_total) }} USD</h3>
+    </section>
+    <section class="sx-income-card">
+      <span>LV3 · 1%</span>
+      <h3>{{ "%.3f"|format(lv3_total) }} USD</h3>
+    </section>
+  </div>
+
+  <h2>Commission history</h2>
+  {% if commissions %}
+    {% for item in commissions %}
+      <div class="sx-income-card">
+        <strong>LV{{ item.referral_level }} commission</strong>
+        <span>+{{ "%.3f"|format(item.amount_usd) }} USD</span>
+        <small>{{ item.created_at }}</small>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="sx-income-empty">No referral commissions have been credited yet. Commissions appear here after qualifying deposits are approved.</p>
+  {% endif %}
 </div>
 {% endblock %}
