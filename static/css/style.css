@@ -1003,3 +1003,125 @@ body::before {
   color: #a9c5d5;
   overflow-wrap: anywhere;
 }
+
+/* Space X authentication redesign — login and registration only */
+body:has(form.auth-form) {
+  font-family: Arial, sans-serif !important;
+  background: #10101b !important;
+}
+body:has(form.auth-form) main.page-shell {
+  min-height: 100vh !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  justify-content: center !important;
+  padding: 24px 16px !important;
+  background:
+    linear-gradient(rgba(12,10,28,.40), rgba(12,10,28,.58)),
+    url("../images/spacex-auth-bg.png") center center / cover fixed no-repeat !important;
+}
+body:has(form.auth-form) main.page-shell > h1,
+body:has(form.auth-form) main.page-shell > .subtitle,
+body:has(form.auth-form) main.page-shell > form.auth-form,
+body:has(form.auth-form) main.page-shell > .auth-switch {
+  width: 100% !important;
+  max-width: 390px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+body:has(form.auth-form) main.page-shell > h1 {
+  padding: 24px 18px 0 !important;
+  margin: 0 auto !important;
+  background: #fff !important;
+  color: #29243d !important;
+  border-radius: 22px 22px 0 0 !important;
+  font: 700 29px/1.2 Arial,sans-serif !important;
+}
+body:has(form.auth-form) main.page-shell > .subtitle {
+  padding: 7px 18px 20px !important;
+  margin: 0 auto !important;
+  background: #fff !important;
+  color: #777487 !important;
+  font: 14px/1.4 Arial,sans-serif !important;
+}
+body:has(form.auth-form) form.auth-form {
+  max-width: 390px !important;
+  padding: 8px 22px 20px !important;
+  margin: 0 auto !important;
+  gap: 13px !important;
+  background: #fff !important;
+  border-radius: 0 0 22px 22px !important;
+}
+body:has(form.auth-form) form.auth-form .field {
+  height: 51px !important;
+  min-height: 51px !important;
+  border: 1px solid #e3e0eb !important;
+  border-radius: 11px !important;
+  background: #f8f7fb !important;
+  padding: 0 13px !important;
+  gap: 10px !important;
+}
+body:has(form.auth-form) form.auth-form .field-icon {
+  color: #8173b4 !important;
+}
+body:has(form.auth-form) form.auth-form input {
+  color: #29243d !important;
+  font: 14px Arial,sans-serif !important;
+}
+body:has(form.auth-form) form.auth-form input::placeholder {
+  color: #92909d !important;
+}
+body:has(form.auth-form) form.auth-form .captcha-row {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  height: 51px !important;
+}
+body:has(form.auth-form) form.auth-form .captcha-input {
+  flex: 1 !important;
+  min-width: 0 !important;
+  height: 51px !important;
+  padding: 10px !important;
+  border: 1px solid #e3e0eb !important;
+  border-radius: 11px !important;
+  background: #f8f7fb !important;
+  color: #29243d !important;
+}
+body:has(form.auth-form) form.auth-form .captcha-code {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 85px !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+  background: #eee9ff !important;
+  color: #6a4acb !important;
+  font-weight: 700 !important;
+}
+body:has(form.auth-form) form.auth-form .primary-button {
+  height: 51px !important;
+  min-height: 51px !important;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: #7653d6 !important;
+  color: white !important;
+  font: 700 16px Arial,sans-serif !important;
+  box-shadow: 0 5px 13px #7653d633 !important;
+}
+body:has(form.auth-form) main.page-shell > .auth-switch {
+  max-width: 390px !important;
+  margin: 0 auto !important;
+  padding: 0 18px 22px !important;
+  background: white !important;
+  color: #777487 !important;
+  border-radius: 0 0 22px 22px !important;
+  font: 13px Arial,sans-serif !important;
+}
+body:has(form.auth-form) .auth-switch a {
+  color: #7653d6 !important;
+}
+@media(max-height:650px) {
+  body:has(form.auth-form) main.page-shell {
+    justify-content: flex-start !important;
+  }
+}
