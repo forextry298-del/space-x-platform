@@ -645,10 +645,11 @@ def profile():
     first_this_month = today.replace(day=1)
     first_last_month = (first_this_month - timedelta(days=1)).replace(day=1)
     last_month = first_last_month.strftime("%Y-%m")
+    uid = session["uid"]
 
     with db() as c:
         user = c.execute(
-            "SELECT * FROM users WHERE id=?", (session["uid"],)
+            "SELECT * FROM users WHERE id=?", (uid,)
         ).fetchone()
 
         if not user:
@@ -658,20 +659,61 @@ def profile():
         invited_last = c.execute("""
             SELECT COUNT(*) FROM users
             WHERE referred_by=? AND created_at>=? AND created_at<?
-        """, (user["id"], first_last_month.isoformat(),
+        """, (uid, first_last_month.isoformat(),
               first_this_month.isoformat())).fetchone()[0]
 
         invited_this = c.execute("""
             SELECT COUNT(*) FROM users
             WHERE referred_by=? AND created_at>=?
-        """, (user["id"], first_this_month.isoformat())).fetchone()[0]
+        """, (uid, first_this_month.isoformat())).fetchone()[0]
 
         claim = c.execute("""
             SELECT amount FROM salary_claims
             WHERE user_id=? AND salary_month=?
-        """, (user["id"], last_month)).fetchone()
-
+        """, (uid, last_month)).fetchone()
         last_salary = claim["amount"] if claim else 0
+
+        ai_income = c.execute("""
+            SELECT COALESCE(SUM(amount_usd), 0)
+            FROM machine_earnings WHERE user_id=?
+        """, (uid,)).fetchone()[0]
+
+        today_income = c.execute("""
+            SELECT COALESCE(SUM(amount_usd), 0)
+            FROM machine_earnings
+            WHERE user_id=? AND earning_date=?
+        """, (uid, today.isoformat())).fetchone()[0]
+
+        invite_count = c.execute("""
+            SELECT COUNT(*) FROM users WHERE referred_by=?
+        """, (uid,)).fetchone()[0]
+
+        team_count = c.execute("""
+            WITH RECURSIVE team(id, level) AS (
+                SELECT id, 1 FROM users WHERE referred_by=?
+                UNION ALL
+                SELECT u.id, team.level+1
+                FROM users u JOIN team ON u.referred_by=team.id
+                WHERE team.level < 3
+            )
+            SELECT COUNT(DISTINCT id) FROM team
+        """, (uid,)).fetchone()[0]
+
+        team_income = c.execute("""
+            SELECT COALESCE(SUM(amount_usd), 0)
+            FROM referral_commissions
+            WHERE beneficiary_user_id=? AND referral_level IN (1,2,3)
+        """, (uid,)).fetchone()[0]
+
+        deposit_total = c.execute("""
+            SELECT COALESCE(SUM(requested_usd), 0)
+            FROM deposit_requests WHERE user_id=? AND status='approved'
+        """, (uid,)).fetchone()[0]
+
+        withdrawal_total = c.execute("""
+            SELECT COALESCE(SUM(amount_usd), 0)
+            FROM withdrawal_requests WHERE user_id=? AND status='approved'
+        """, (uid,)).fetchone()[0]
 
     return render_template(
         "profile.html",
@@ -681,7 +723,14 @@ def profile():
         last_salary=last_salary,
         this_salary=0,
         invited_last=invited_last,
-        invited_this=invited_this
+        invited_this=invited_this,
+        ai_income=ai_income,
+        today_income=today_income,
+        invite_count=invite_count,
+        team_count=team_count,
+        team_income=team_income,
+        deposit_total=deposit_total,
+        withdrawal_total=withdrawal_total
     )
 
 

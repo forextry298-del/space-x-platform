@@ -11,13 +11,13 @@
       W
     </button>
     <div id="sx-wallet-details" class="sx-wallet-details" hidden>
-      <div><span>Deposit</span><strong>0.00 USD</strong></div>
-      <div><span>Withdraw</span><strong>0.00 USD</strong></div>
-      <div><span>AI Income</span><strong>0.00 USD</strong></div>
-      <div><span>Today's earnings</span><strong>0.00 USD</strong></div>
-      <div><span>Invite Count</span><strong>0</strong></div>
-      <div><span>Team Count</span><strong>0</strong></div>
-      <div><span>Team income</span><strong>0.00 USD</strong></div>
+      <div><span>Deposit</span><strong>{{ "%.2f"|format(deposit_total) }} USD</strong></div>
+      <div><span>Withdraw</span><strong>{{ "%.2f"|format(withdrawal_total) }} USD</strong></div>
+      <div><span>AI Income</span><strong>{{ "%.2f"|format(ai_income) }} USD</strong></div>
+      <div><span>Today's earnings</span><strong>{{ '%.2f'|format(today_income) }} USD</strong></div>
+      <div><span>Invite Count</span><strong>{{ invite_count }}</strong></div>
+      <div><span>Team Count</span><strong>{{ team_count }}</strong></div>
+      <div><span>Team income</span><strong>{{ "%.2f"|format(team_income) }} USD</strong></div>
     </div>
   </section>
 
