@@ -383,7 +383,7 @@ def dashboard():
         direct_count = c.execute("""
             SELECT COUNT(*) FROM users
             WHERE referred_by=?
-        """, (user["referral_code"],)).fetchone()[0]
+        """, (uid,)).fetchone()[0]
 
         team_count = c.execute("""
             WITH RECURSIVE team(id,level) AS (
