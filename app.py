@@ -949,6 +949,52 @@ def deposit_instructions(deposit_id):
 
 
 
+
+@app.route("/vip-tasks")
+def vip_tasks():
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    uid = session["uid"]
+    with db() as c:
+        user = c.execute(
+            "SELECT referral_code FROM users WHERE id=?", (uid,)
+        ).fetchone()
+        if not user:
+            session.clear()
+            return redirect(url_for("login"))
+
+        code = user["referral_code"]
+        if not code:
+            code = secrets.token_urlsafe(8).replace("-", "").replace("_", "")[:10]
+            c.execute("UPDATE users SET referral_code=? WHERE id=?", (code, uid))
+
+        qualified_count = c.execute("""
+            SELECT COUNT(*) FROM users invited
+            WHERE invited.referred_by=?
+              AND EXISTS (
+                SELECT 1 FROM deposit_requests d
+                WHERE d.user_id=invited.id AND d.status='approved'
+              )
+        """, (uid,)).fetchone()[0]
+
+        reward_total = c.execute("""
+            SELECT COALESCE(SUM(amount_usd), 0)
+            FROM referral_commissions
+            WHERE beneficiary_user_id=? AND referral_level=1
+        """, (uid,)).fetchone()[0]
+
+    referral_link = request.host_url.rstrip("/") + url_for("register") + "?ref=" + code
+    return render_template(
+        "vip_tasks.html",
+        referral_code=code,
+        referral_link=referral_link,
+        qualified_count=qualified_count,
+        reward_total=float(reward_total or 0),
+        reward_rate=0.10
+    )
+
+
 @app.route("/invite")
 def invite():
     if "uid" not in session:
@@ -1002,3 +1048,5 @@ def my_team():
 @app.route("/logout")
 def logout(): session.clear(); return redirect(url_for("login"))
 if __name__=="__main__": app.run(host="0.0.0.0",port=int(os.environ.get("PORT",5000)))
+
+import simple_admin

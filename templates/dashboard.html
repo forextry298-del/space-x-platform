@@ -80,8 +80,16 @@
     })();
   </script>
 
-  <header class="sx-top">
+  {% if space_x_notice %}
+<div id="space-x-notice" style="position:fixed;inset:0;background:#0009;z-index:9999;display:grid;place-items:center;padding:20px">
+<div style="background:white;color:#123;padding:24px;border-radius:14px;max-width:400px;width:100%">
+<h3>Announcement</h3><p>{{ space_x_notice }}</p>
+<button onclick="document.getElementById('space-x-notice').remove()">Close</button>
+</div></div>
+{% endif %}
+<header class="sx-top">
     <h1>AI Machine</h1>
+    {% if session.get("phone") == "0758878297" %}<a href="/admin">Admin</a>{% endif %}
     <a class="sx-message-link" href="#messages">
       <span>🔔</span><small>Message</small>
     </a>
