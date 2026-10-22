@@ -89,6 +89,28 @@ with db() as c:
     print("Salary and machine purchase tables verified.")
 
     c.execute("""
+        CREATE TABLE IF NOT EXISTS reward_codes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code TEXT NOT NULL UNIQUE COLLATE NOCASE,
+            amount_usd REAL NOT NULL CHECK(amount_usd > 0),
+            active INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+    """)
+
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS reward_redemptions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code_id INTEGER NOT NULL REFERENCES reward_codes(id),
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            amount_usd REAL NOT NULL,
+            redeemed_at TEXT NOT NULL DEFAULT (datetime('now')),
+            UNIQUE(code_id, user_id)
+        )
+    """)
+
+
+    c.execute("""
         CREATE TABLE IF NOT EXISTS deposit_requests (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL REFERENCES users(id),
@@ -450,6 +472,35 @@ def profile():
         invited_last=invited_last,
         invited_this=invited_this
     )
+
+
+@app.route("/redeem-reward", methods=["POST"])
+def redeem_reward():
+    import sqlite3
+    if "uid" not in session:
+        return redirect(url_for("login"))
+    code = request.form.get("code", "").strip().upper()
+    if not code:
+        flash("Enter a reward code.", "error")
+        return redirect(url_for("profile"))
+    try:
+        with db() as c:
+            c.execute("BEGIN IMMEDIATE")
+            reward = c.execute("SELECT id, amount_usd FROM reward_codes WHERE code=? COLLATE NOCASE AND active=1", (code,)).fetchone()
+            if not reward:
+                flash("Invalid or inactive reward code.", "error")
+                return redirect(url_for("profile"))
+            try:
+                c.execute("INSERT INTO reward_redemptions (code_id,user_id,amount_usd) VALUES (?,?,?)", (reward["id"], session["uid"], reward["amount_usd"]))
+            except sqlite3.IntegrityError:
+                flash("You have already redeemed this code.", "error")
+                return redirect(url_for("profile"))
+            c.execute("UPDATE users SET balance=ROUND(COALESCE(balance,0)+?,3) WHERE id=?", (reward["amount_usd"], session["uid"]))
+            flash(f"Reward of ${reward["amount_usd"]:.2f} credited to your balance.", "success")
+    except Exception:
+        app.logger.exception("Reward redemption failed")
+        flash("Could not redeem the code. Please try again.", "error")
+    return redirect(url_for("profile"))
 
 
 @app.route("/claim-salary", methods=["POST"])
