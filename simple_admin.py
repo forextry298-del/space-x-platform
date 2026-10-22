@@ -43,7 +43,7 @@ def admin_deposits():
                     if approved.rowcount == 1:
                         credited = float(dep["paid_ugx"] or dep["requested_ugx"] or 0) / max(float(dep["exchange_rate"] or 1), 0.000001)
                         c.execute(
-                            "UPDATE users SET balance=COALESCE(balance,0)+? WHERE id=?",
+                            "UPDATE users SET wallet=COALESCE(wallet,0)+? WHERE id=?",
                             (round(credited, 2), dep["user_id"])
                         )
                     previous = c.execute(
