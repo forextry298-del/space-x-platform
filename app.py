@@ -141,6 +141,120 @@ with db() as c:
         )
     """)
 
+
+# Chat tables are initialized separately from the existing database setup.
+def init_chat_tables():
+    conn = db()
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS group_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS manager_messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                sender_role TEXT NOT NULL DEFAULT 'user',
+                message TEXT DEFAULT '',
+                image_path TEXT DEFAULT '',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+    finally:
+        conn.close()
+
+
+
+@app.route("/chats", methods=["GET", "POST"])
+def chats():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    init_chat_tables()
+    conn = db()
+    try:
+        if request.method == "POST":
+            message = request.form.get("message", "").strip()
+            if message and len(message) <= 2000:
+                conn.execute(
+                    "INSERT INTO group_messages (user_id, message) VALUES (?, ?)",
+                    (session["user_id"], message)
+                )
+                conn.commit()
+            return redirect(url_for("chats"))
+
+        messages = conn.execute("""
+            SELECT group_messages.message, group_messages.created_at,
+                   users.phone
+            FROM group_messages
+            LEFT JOIN users ON users.id = group_messages.user_id
+            ORDER BY group_messages.id DESC LIMIT 100
+        """).fetchall()
+        return render_template("chats.html", messages=list(reversed(messages)))
+    finally:
+        conn.close()
+
+
+@app.route("/manager", methods=["GET", "POST"])
+def manager_chat():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    init_chat_tables()
+    from werkzeug.utils import secure_filename
+    import uuid
+
+    upload_dir = Path("static/uploads")
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    conn = db()
+
+    try:
+        if request.method == "POST":
+            message = request.form.get("message", "").strip()[:2000]
+            image = request.files.get("image")
+            image_path = ""
+
+            if image and image.filename:
+                ext = Path(secure_filename(image.filename)).suffix.lower()
+                allowed = {
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".png": "image/png",
+                    ".webp": "image/webp",
+                    ".gif": "image/gif",
+                }
+                if ext not in allowed or image.mimetype != allowed[ext]:
+                    flash("Please upload a JPG, PNG, WEBP or GIF image.", "error")
+                    return redirect(url_for("manager_chat"))
+
+                filename = uuid.uuid4().hex + ext
+                image.save(upload_dir / filename)
+                image_path = "uploads/" + filename
+
+            if message or image_path:
+                conn.execute("""
+                    INSERT INTO manager_messages
+                    (user_id, sender_role, message, image_path)
+                    VALUES (?, 'user', ?, ?)
+                """, (session["user_id"], message, image_path))
+                conn.commit()
+            return redirect(url_for("manager_chat"))
+
+        messages = conn.execute("""
+            SELECT message, image_path, created_at, sender_role
+            FROM manager_messages
+            WHERE user_id = ?
+            ORDER BY id ASC LIMIT 100
+        """, (session["user_id"],)).fetchall()
+        return render_template("manager.html", messages=messages)
+    finally:
+        conn.close()
+
 @app.route("/")
 def index(): return redirect(url_for("register"))
 @app.route("/register", methods=["GET","POST"])

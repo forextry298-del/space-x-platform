@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+.chat-wrap{max-width:700px;margin:auto;padding:12px 12px 90px;color:#f5f7fb}
+.chat-head{padding:14px;background:#111c2a;border-radius:12px;margin-bottom:12px}
+.chat-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.chat-msg{background:#182536;border:1px solid #26374a;border-radius:12px;padding:12px;overflow-wrap:anywhere}
+.chat-name{font-size:12px;color:#50d9e8;margin-bottom:5px}
+.chat-time{font-size:11px;color:#a5b1c1;margin-top:6px}
+.chat-form{display:flex;gap:8px;position:sticky;bottom:68px;background:#0b111a;padding:8px 0}
+.chat-form input{flex:1;min-width:0;background:#182536;color:white;border:1px solid #34465b;border-radius:10px;padding:12px}
+.chat-form button{background:#19b9c9;color:#071018;border:0;border-radius:10px;padding:0 16px;font-weight:bold}
+</style>
+<div class="chat-wrap">
+  <div class="chat-head">
+    <h2>Community Chats</h2>
+    <p>Messages shared with everyone in the group.</p>
+  </div>
+  <div class="chat-list">
+  {% for m in messages %}
+    <div class="chat-msg">
+      <div class="chat-name">{{ m['phone'] or 'Member' }}</div>
+      <div>{{ m['message'] }}</div>
+      <div class="chat-time">{{ m['created_at'] }}</div>
+    </div>
+  {% else %}
+    <p>No messages yet. Start the conversation.</p>
+  {% endfor %}
+  </div>
+  <form class="chat-form" method="post">
+    <input name="message" maxlength="2000" placeholder="Write a message..." required>
+    <button type="submit">Send</button>
+  </form>
+</div>
+{% endblock %}

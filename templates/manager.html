@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+.manager-wrap{max-width:700px;margin:auto;padding:12px 12px 90px;color:#f5f7fb}
+.manager-head{background:#111c2a;padding:14px;border-radius:12px;margin-bottom:12px}
+.manager-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.manager-msg{background:#182536;border:1px solid #26374a;border-radius:12px;padding:12px;overflow-wrap:anywhere}
+.manager-msg img{display:block;max-width:100%;max-height:280px;border-radius:8px;margin-top:8px}
+.manager-time{font-size:11px;color:#a5b1c1;margin-top:6px}
+.manager-form{background:#111c2a;border-radius:12px;padding:12px;display:grid;gap:10px}
+.manager-form textarea,.manager-form input{width:100%;box-sizing:border-box;background:#182536;color:white;border:1px solid #34465b;border-radius:10px;padding:12px}
+.manager-form button{background:#19b9c9;color:#071018;border:0;border-radius:10px;padding:12px;font-weight:bold}
+</style>
+<div class="manager-wrap">
+  <div class="manager-head">
+    <h2>Manager Support</h2>
+    <p>Send a message or attach an image for the manager.</p>
+  </div>
+  <div class="manager-list">
+  {% for m in messages %}
+    <div class="manager-msg">
+      {% if m['message'] %}<div>{{ m['message'] }}</div>{% endif %}
+      {% if m['image_path'] %}
+      <img src="{{ url_for('static', filename=m['image_path']) }}" alt="Uploaded image">
+      {% endif %}
+      <div class="manager-time">{{ m['created_at'] }}</div>
+    </div>
+  {% else %}
+    <p>No support messages yet.</p>
+  {% endfor %}
+  </div>
+  <form class="manager-form" method="post" enctype="multipart/form-data">
+    <textarea name="message" rows="3" maxlength="2000" placeholder="Write a message to the manager..."></textarea>
+    <label>Attach an image</label>
+    <input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+    <button type="submit">Send to Manager</button>
+  </form>
+</div>
+{% endblock %}
