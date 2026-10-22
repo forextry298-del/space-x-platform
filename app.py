@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os, secrets, string
+from pathlib import Path
 from machine_catalog import MACHINE_CATALOG
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-before-deployment")
