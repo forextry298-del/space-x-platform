@@ -36,10 +36,16 @@ def admin_deposits():
                         (did,)
                     )
                 elif dep and action == "approve":
-                    c.execute(
+                    approved = c.execute(
                         "UPDATE deposit_requests SET status='approved', reviewed_at=CURRENT_TIMESTAMP WHERE id=? AND status='pending'",
                         (did,)
                     )
+                    if approved.rowcount == 1:
+                        credited = float(dep["paid_ugx"] or dep["requested_ugx"] or 0) / max(float(dep["exchange_rate"] or 1), 0.000001)
+                        c.execute(
+                            "UPDATE users SET balance=COALESCE(balance,0)+? WHERE id=?",
+                            (round(credited, 2), dep["user_id"])
+                        )
                     previous = c.execute(
                         "SELECT 1 FROM deposit_requests WHERE user_id=? AND status='approved' AND id<>? LIMIT 1",
                         (dep["user_id"], did)
