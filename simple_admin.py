@@ -51,38 +51,44 @@ def admin_deposits():
                         (dep["user_id"],)
                     ).fetchone()
 
-                    # Pay 10%, 5%, and 1% to the first three inviter levels.
-                    if approved.rowcount == 1 and invitee and invitee["referred_by"]:
-                        current_id = invitee["referred_by"]
-                        rates = {1: 0.10, 2: 0.05, 3: 0.01}
-                        deposit_usd = float(
-                            dep["paid_ugx"] or dep["requested_ugx"] or 0
-                        ) / max(float(dep["exchange_rate"] or 1), 0.000001)
 
-                        for level in (1, 2, 3):
-                            inviter = c.execute(
-                                "SELECT id, referred_by FROM users WHERE id=?",
-                                (current_id,)
-                            ).fetchone()
-                            if not inviter:
-                                break
+                    # Pay exactly $1 to the direct inviter on the
+                    # invitee's first approved deposit only.
+                    if approved.rowcount == 1:
+                        invitee = c.execute(
+                            "SELECT referred_by FROM users WHERE id=?",
+                            (dep["user_id"],)
+                        ).fetchone()
 
-                            reward = round(deposit_usd * rates[level], 2)
-                            if reward > 0:
-                                cur = c.execute(
-                                    """INSERT OR IGNORE INTO referral_commissions
-                                       (deposit_id, beneficiary_user_id, referral_level, amount_usd)
-                                       VALUES (?, ?, ?, ?)""",
-                                    (did, inviter["id"], level, reward)
-                                )
+                        if invitee and invitee["referred_by"]:
+                            inviter_id = invitee["referred_by"]
+
+                            prior = c.execute("""
+                                SELECT 1 FROM referral_commissions
+                                WHERE beneficiary_user_id=?
+                                  AND referral_level=1
+                                  AND deposit_id IN (
+                                      SELECT id FROM deposit_requests
+                                      WHERE user_id=? AND status='approved'
+                                        AND id<>?
+                                  )
+                                LIMIT 1
+                            """, (inviter_id, dep["user_id"], did)).fetchone()
+
+                            if not prior:
+                                cur = c.execute("""
+                                    INSERT OR IGNORE INTO referral_commissions
+                                    (deposit_id, beneficiary_user_id,
+                                     referral_level, amount_usd, created_at)
+                                    VALUES (?, ?, 1, 1.0, ?)
+                                """, (did, inviter_id, __import__("time").time()))
+
                                 if cur.rowcount == 1:
-                                    c.execute(
-                                        """UPDATE users
-                                           SET balance=COALESCE(balance,0)+?
-                                           WHERE id=?""",
-                                        (reward, inviter["id"])
-                                    )
-                            current_id = inviter["referred_by"]
+                                    c.execute("""
+                                        UPDATE users
+                                        SET balance=COALESCE(balance,0)+1.0
+                                        WHERE id=?
+                                    """, (inviter_id,))
 
                 c.commit()
 
