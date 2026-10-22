@@ -498,8 +498,7 @@ def daily_machine_earnings_job():
 
 @app.route("/income")
 def income():
-    from datetime import datetime, date
-
+    from datetime import datetime, date, timedelta
     if "uid" not in session:
         return redirect(url_for("login"))
 
@@ -526,16 +525,22 @@ def income():
                     str(purchase["purchased_at"]).replace("Z", "+00:00")
                 )
                 if purchased.tzinfo:
-                    purchased = purchased.replace(tzinfo=None)
-                elapsed = max(0, (today - purchased.date()).days)
+                    purchased = purchased.astimezone().replace(tzinfo=None)
+                elapsed_seconds = max(0, (now - purchased).total_seconds())
+                elapsed_days = int(elapsed_seconds // 86400)
             except (ValueError, TypeError):
-                elapsed = 0
+                purchased = now
+                elapsed_seconds = 0
+                elapsed_days = 0
 
-            completed = min(elapsed, duration)
-            status = "Expired" if elapsed >= duration else "Running"
+            completed = min(elapsed_days, duration)
+            status = "Expired" if elapsed_days >= duration else "Running"
+            next_seconds = max(0, 86400 - int(elapsed_seconds % 86400))
+            maturity = purchased + timedelta(days=duration)
+            remaining = max(0, int((maturity - now).total_seconds()))
 
             earned = c.execute("""
-                SELECT COALESCE(SUM(amount_usd), 0)
+                SELECT COALESCE(SUM(amount_usd),0)
                 FROM machine_earnings WHERE purchase_id=?
             """, (purchase["id"],)).fetchone()[0]
 
@@ -548,8 +553,11 @@ def income():
                 "daily": daily,
                 "total": round(daily * duration, 2),
                 "earned": round(float(earned or 0), 2),
-                "progress": round(completed * 100 / duration) if duration else 100,
+                "progress": min(100, round(completed * 100 / duration)) if duration else 100,
                 "status": status,
+                "image": image,
+                "next_seconds": next_seconds,
+                "remaining_seconds": remaining,
             })
 
     return render_template("income.html", machines=machines)
