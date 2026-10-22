@@ -73,9 +73,17 @@ with db() as c:
             earning_day INTEGER NOT NULL,
             amount_usd REAL NOT NULL,
             created_at TEXT NOT NULL DEFAULT (datetime('now')),
+            earning_date TEXT,
             UNIQUE(purchase_id, earning_day)
         )
     """)
+
+    earning_columns = {
+        row["name"] for row in c.execute("PRAGMA table_info(machine_earnings)")
+    }
+    if "earning_date" not in earning_columns:
+        c.execute("ALTER TABLE machine_earnings ADD COLUMN earning_date TEXT")
+        print("Added machine_earnings.earning_date")
 
     c.execute("""
         CREATE TABLE IF NOT EXISTS salary_claims (
@@ -370,10 +378,9 @@ def dashboard():
         """, (uid,)).fetchone()[0]
 
         today_income = c.execute("""
-            SELECT COALESCE(SUM(me.amount_usd),0)
-            FROM machine_earnings me
-            JOIN machine_purchases mp ON mp.id=me.purchase_id
-            WHERE me.user_id=? AND me.earning_day=date('now')
+            SELECT COALESCE(SUM(amount_usd),0)
+            FROM machine_earnings
+            WHERE user_id=? AND earning_date=date('now')
         """, (uid,)).fetchone()[0]
 
         user = c.execute(
@@ -438,46 +445,60 @@ def process_daily_machine_earnings():
     from datetime import date, datetime
 
     today = date.today()
+    today_text = today.isoformat()
     credited = 0
 
     with db() as c:
+        # Migrate older databases without deleting existing earnings.
+        columns = {
+            row["name"] for row in c.execute(
+                "PRAGMA table_info(machine_earnings)"
+            ).fetchall()
+        }
+        if "earning_date" not in columns:
+            c.execute("ALTER TABLE machine_earnings ADD COLUMN earning_date TEXT")
+
         purchases = c.execute("""
             SELECT id, user_id, machine_code, purchased_at
-            FROM machine_purchases WHERE status='successful'
+            FROM machine_purchases
+            WHERE status='successful'
         """).fetchall()
 
-        for p in purchases:
-            item = MACHINE_CATALOG.get(p["machine_code"])
-            if not item or not p["purchased_at"]:
+        for purchase in purchases:
+            item = MACHINE_CATALOG.get(purchase["machine_code"])
+            if not item or not purchase["purchased_at"]:
                 continue
 
             _, duration, _, daily, _ = item
             try:
                 bought = datetime.fromisoformat(
-                    str(p["purchased_at"]).replace("Z", "+00:00")
+                    str(purchase["purchased_at"]).replace("Z", "+00:00")
                 ).date()
             except (ValueError, TypeError):
                 continue
 
             days = min(duration, max(0, (today - bought).days + 1))
+
             for day in range(1, days + 1):
+                earning_date = (bought.fromordinal(bought.toordinal() + day - 1)).isoformat()
+
                 cur = c.execute("""
                     INSERT OR IGNORE INTO machine_earnings
-                    (purchase_id, user_id, earning_day, amount_usd)
-                    VALUES (?, ?, ?, ?)
-                """, (p["id"], p["user_id"], day, daily))
+                    (purchase_id, user_id, earning_day, amount_usd, earning_date)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (
+                    purchase["id"], purchase["user_id"], day, daily, earning_date
+                ))
 
-                if cur.rowcount:
+                if cur.rowcount == 1:
                     c.execute(
-                        "UPDATE users SET balance=balance+? WHERE id=?",
-                        (daily, p["user_id"])
+                        "UPDATE users SET balance=COALESCE(balance,0)+? WHERE id=?",
+                        (daily, purchase["user_id"])
                     )
                     credited += 1
 
     return credited
 
-
-@app.post("/internal/daily-earnings")
 def daily_machine_earnings_job():
     import hmac
 
