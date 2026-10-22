@@ -46,30 +46,44 @@ def admin_deposits():
                             "UPDATE users SET wallet=COALESCE(wallet,0)+? WHERE id=?",
                             (round(credited, 2), dep["user_id"])
                         )
-                    previous = c.execute(
-                        "SELECT 1 FROM deposit_requests WHERE user_id=? AND status='approved' AND id<>? LIMIT 1",
-                        (dep["user_id"], did)
-                    ).fetchone()
                     invitee = c.execute(
                         "SELECT referred_by FROM users WHERE id=?",
                         (dep["user_id"],)
                     ).fetchone()
-                    if not previous and invitee and invitee["referred_by"]:
-                        inviter = c.execute(
-                            "SELECT id FROM users WHERE referral_code=?",
-                            (invitee["referred_by"],)
-                        ).fetchone()
-                        reward = float(dep["paid_ugx"] or 0) / max(float(dep["exchange_rate"] or 1), 0.000001) * 0.10
-                        if inviter and reward > 0:
-                            cur = c.execute(
-                                "INSERT OR IGNORE INTO referral_commissions (deposit_id, beneficiary_user_id, referral_level, amount_usd) VALUES (?, ?, 1, ?)",
-                                (did, inviter["id"], reward)
-                            )
-                            if cur.rowcount == 1:
-                                c.execute(
-                                    "UPDATE users SET balance=COALESCE(balance,0)+? WHERE id=?",
-                                    (reward, inviter["id"])
+
+                    # Pay 10%, 5%, and 1% to the first three inviter levels.
+                    if approved.rowcount == 1 and invitee and invitee["referred_by"]:
+                        current_id = invitee["referred_by"]
+                        rates = {1: 0.10, 2: 0.05, 3: 0.01}
+                        deposit_usd = float(
+                            dep["paid_ugx"] or dep["requested_ugx"] or 0
+                        ) / max(float(dep["exchange_rate"] or 1), 0.000001)
+
+                        for level in (1, 2, 3):
+                            inviter = c.execute(
+                                "SELECT id, referred_by FROM users WHERE id=?",
+                                (current_id,)
+                            ).fetchone()
+                            if not inviter:
+                                break
+
+                            reward = round(deposit_usd * rates[level], 2)
+                            if reward > 0:
+                                cur = c.execute(
+                                    """INSERT OR IGNORE INTO referral_commissions
+                                       (deposit_id, beneficiary_user_id, referral_level, amount_usd)
+                                       VALUES (?, ?, ?, ?)""",
+                                    (did, inviter["id"], level, reward)
                                 )
+                                if cur.rowcount == 1:
+                                    c.execute(
+                                        """UPDATE users
+                                           SET balance=COALESCE(balance,0)+?
+                                           WHERE id=?""",
+                                        (reward, inviter["id"])
+                                    )
+                            current_id = inviter["referred_by"]
+
                 c.commit()
 
         rows = c.execute(

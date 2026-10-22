@@ -386,15 +386,15 @@ def dashboard():
         """, (uid,)).fetchone()[0]
 
         team_count = c.execute("""
-            WITH RECURSIVE team(id,level) AS (
-                SELECT id,1 FROM users WHERE referred_by=?
+            WITH RECURSIVE team(id, level) AS (
+                SELECT id, 1 FROM users WHERE referred_by=?
                 UNION ALL
-                SELECT u.id,t.level+1 FROM users u JOIN team t
-                ON u.referred_by=(SELECT referral_code FROM users WHERE id=t.id)
-                WHERE t.level<3
+                SELECT u.id, team.level+1
+                FROM users u JOIN team ON u.referred_by=team.id
+                WHERE team.level < 3
             )
             SELECT COUNT(DISTINCT id) FROM team
-        """, (user["referral_code"],)).fetchone()[0]
+        """, (uid,)).fetchone()[0]
 
         team_income = c.execute("""
             SELECT COALESCE(SUM(amount_usd),0)
