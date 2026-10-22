@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPACE X Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#071426;color:#edf5ff;font-family:Arial,sans-serif}
+header{padding:24px 18px;background:linear-gradient(135deg,#102c50,#087ca7)}
+header small{color:#b8e5ff;letter-spacing:2px}
+header h2{margin:10px 0}
+main{max-width:850px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#10233b;border:1px solid #254463;border-radius:16px;padding:18px;margin-bottom:12px}
+.card h3{margin-top:0}
+a{display:block;text-decoration:none;color:#eaf7ff;background:#183b5f;padding:15px;border-radius:11px;font-weight:bold}
+nav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+p{color:#b8cce0;line-height:1.5}
+@media(max-width:360px){.grid,nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<small>SPACE X • CONTROL CENTER</small>
+<h2>Admin Dashboard</h2>
+<p>Manage your platform from one place.</p>
+</header>
+<main>
+<section class="grid">
+<div class="card"><p>DEPOSIT MANAGEMENT</p><h3>Review Deposits</h3><a href="/admin/deposits">Open Deposits →</a></div>
+<div class="card"><p>WITHDRAWAL MANAGEMENT</p><h3>Review Withdrawals</h3><a href="/admin/withdrawals">Open Withdrawals →</a></div>
+<div class="card"><p>COMMUNICATION</p><h3>Announcements</h3><a href="/admin/announcement">Publish Message →</a></div>
+<div class="card"><p>MAIN WEBSITE</p><h3>Dashboard</h3><a href="/dashboard">Return Home →</a></div>
+</section>
+</main>
+</body>
+</html>

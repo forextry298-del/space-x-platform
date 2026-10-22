@@ -1,3 +1,4 @@
+from pathlib import Path
 from flask import request, session, redirect, url_for, render_template_string
 from app import app, db
 import os
@@ -10,16 +11,7 @@ def simple_admin():
     admin = os.getenv("SPACE_X_ADMIN_PHONE", "0758878297")
     if phone != admin:
         return "Access denied", 403
-    return render_template_string("""
-    <h2>SPACE X Admin</h2>
-    <p><a href="/admin/deposits">Manage deposits</a></p>
-    <p><a href="/admin/withdrawals">Manage withdrawals</a></p>
-    <p><a href="/admin/announcement">Publish announcement</a></p>
-    {% with messages = get_flashed_messages() %}{% for m in messages %}<p>{{ m }}</p>{% endfor %}{% endwith %}
-    <p><a href="/admin/announcement">Announcements</a></p>
-    <p><a href="/admin/deposits">Manage deposits</a></p><p><a href="/admin/withdrawals">Manage withdrawals</a></p>
-    <p><a href="/dashboard">Dashboard</a></p>
-    """)
+    return render_template_string(Path("templates/admin_home.html").read_text())
 
 @app.route("/admin/deposits", methods=["GET", "POST"])
 def admin_deposits():
@@ -81,7 +73,7 @@ def admin_deposits():
     return render_template_string("""
     <h2>Pending deposits</h2>
     {% for d in rows %}
-      <p>#{{ d.id }} | User {{ d.user_id }} | {{ d.requested_ugx }} UGX</p>
+      <p>#{{ d.id }} | User {{ d.user_id }} | Amount: {{ d.requested_ugx }} UGX<br>Deposit phone: {{ d.sender_phone or "Not provided" }}<br>Transaction ID: {{ d.transaction_id or "Not provided" }}</p>
       <form method="post">
         <input type="hidden" name="id" value="{{ d.id }}">
         <button name="action" value="approve">Approve</button>

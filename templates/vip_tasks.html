@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}VIP Tasks | Space X{% endblock %}
+{% block content %}
+<style>
+.vip-page{min-height:100vh;background:#07101b;color:#f5f7fb;padding:20px 15px 100px;font-family:Arial,sans-serif;max-width:650px;margin:auto}
+.vip-head{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.vip-head a{color:#20caff;text-decoration:none;font-size:28px}
+.vip-card{background:#111c2a;border:1px solid #26374a;border-radius:16px;padding:18px;margin-bottom:15px}
+.vip-title{font-size:22px;font-weight:800;color:#20caff}
+.vip-muted{color:#a5b5c8;font-size:13px;line-height:1.6}
+.vip-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.vip-stat{background:#07101b;border-radius:12px;padding:14px}
+.vip-stat strong{display:block;font-size:23px;color:#20caff;margin-top:8px;overflow-wrap:anywhere}
+.vip-btn{display:block;width:100%;box-sizing:border-box;border:0;border-radius:10px;padding:13px;background:#19b9c9;color:#071018;text-align:center;text-decoration:none;font-weight:800;margin-top:12px}
+.vip-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #26374a}
+.vip-row:last-child{border-bottom:0}
+.vip-code{font-size:20px;letter-spacing:2px;color:#20caff;overflow-wrap:anywhere;margin-top:8px}
+</style>
+<div class="vip-page">
+  <div class="vip-head"><a href="{{ url_for('profile') }}">‹</a><div><div class="vip-title">VIP Tasks</div><div class="vip-muted">Invite friends and earn Level 1 rewards</div></div></div>
+  <section class="vip-card">
+    <div class="vip-title">Level 1 Invitation Task</div>
+    <div class="vip-muted">Invite a new member using your personal referral link. A member qualifies after their first deposit is approved. Each member counts once.</div>
+    <div class="vip-stats">
+      <div class="vip-stat"><span class="vip-muted">Qualified members</span><strong>{{ qualified_count }}</strong></div>
+      <div class="vip-stat"><span class="vip-muted">Rewards earned</span><strong>${{ '%.3f'|format(reward_total) }}</strong></div>
+    </div>
+  </section>
+  <section class="vip-card">
+    <div class="vip-muted">YOUR INVITATION CODE</div>
+    <div class="vip-code" id="vip-code">{{ referral_code }}</div>
+    <button class="vip-btn" type="button" onclick="copyVip('vip-code')">Copy Invitation Code</button>
+    <div class="vip-muted" style="margin-top:16px">YOUR REFERRAL LINK</div>
+    <div class="vip-code" style="font-size:13px;letter-spacing:0" id="vip-link">{{ referral_link }}</div>
+    <button class="vip-btn" type="button" onclick="copyVip('vip-link')">Copy Referral Link</button>
+  </section>
+  <section class="vip-card">
+    <div class="vip-title">Reward rules</div>
+    <div class="vip-row"><span>Eligible level</span><strong>LV1 only</strong></div>
+    <div class="vip-row"><span>Qualification</span><strong>First approved deposit</strong></div>
+    <div class="vip-row"><span>Member counted</span><strong>Once only</strong></div>
+    <div class="vip-row"><span>Reward rate</span><strong>{{ (reward_rate * 100)|round|int }}%</strong></div>
+    <p class="vip-muted">Rewards are credited to your Balance after deposit approval. Pending or rejected deposits do not qualify.</p>
+  </section>
+  <a class="vip-btn" href="{{ url_for('invite') }}">Invite Friends</a>
+  <a class="vip-btn" href="{{ url_for('my_team') }}" style="background:#182536;color:#20caff">View My Team</a>
+</div>
+<script>
+function copyVip(id){
+ const text=document.getElementById(id).innerText.trim();
+ if(navigator.clipboard&&window.isSecureContext){
+  navigator.clipboard.writeText(text).then(()=>alert('Copied!')).catch(()=>copyFallback(text));
+ }else copyFallback(text);
+}
+function copyFallback(text){
+ const e=document.createElement('textarea');e.value=text;document.body.appendChild(e);e.select();
+ try{document.execCommand('copy');alert('Copied!')}catch(_){alert('Please select and copy manually')}
+ e.remove();
+}
+</script>
+{% endblock %}
