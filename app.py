@@ -172,7 +172,7 @@ def init_chat_tables():
 
 @app.route("/chats", methods=["GET", "POST"])
 def chats():
-    if not session.get("user_id"):
+    if not session.get("uid"):
         return redirect(url_for("login"))
 
     init_chat_tables()
@@ -183,7 +183,7 @@ def chats():
             if message and len(message) <= 2000:
                 conn.execute(
                     "INSERT INTO group_messages (user_id, message) VALUES (?, ?)",
-                    (session["user_id"], message)
+                    (session["uid"], message)
                 )
                 conn.commit()
             return redirect(url_for("chats"))
@@ -202,7 +202,7 @@ def chats():
 
 @app.route("/manager", methods=["GET", "POST"])
 def manager_chat():
-    if not session.get("user_id"):
+    if not session.get("uid"):
         return redirect(url_for("login"))
 
     init_chat_tables()
@@ -241,7 +241,7 @@ def manager_chat():
                     INSERT INTO manager_messages
                     (user_id, sender_role, message, image_path)
                     VALUES (?, 'user', ?, ?)
-                """, (session["user_id"], message, image_path))
+                """, (session["uid"], message, image_path))
                 conn.commit()
             return redirect(url_for("manager_chat"))
 
@@ -250,7 +250,7 @@ def manager_chat():
             FROM manager_messages
             WHERE user_id = ?
             ORDER BY id ASC LIMIT 100
-        """, (session["user_id"],)).fetchall()
+        """, (session["uid"],)).fetchall()
         return render_template("manager.html", messages=messages)
     finally:
         conn.close()
