@@ -189,3 +189,18 @@ def space_x_announcement():
         return {"space_x_notice": row["message"] if row else ""}
     except Exception:
         return {"space_x_notice": ""}
+
+with db() as c:
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS withdrawal_requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            network TEXT NOT NULL,
+            recipient_phone TEXT NOT NULL,
+            amount_usd REAL NOT NULL,
+            exchange_rate REAL NOT NULL,
+            amount_ugx REAL NOT NULL,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
