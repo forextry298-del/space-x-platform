@@ -344,8 +344,75 @@ def login():
     return render_template("login.html")
 @app.route("/dashboard")
 def dashboard():
-    if "uid" not in session: return redirect(url_for("login"))
-    return render_template("dashboard.html", phone=session.get("phone",""))
+    if "uid" not in session:
+        return redirect(url_for("login"))
+
+    uid = session["uid"]
+    with db() as c:
+        deposits = c.execute("""
+            SELECT COALESCE(SUM(requested_usd),0)
+            FROM deposit_requests WHERE user_id=? AND status='approved'
+        """, (uid,)).fetchone()[0]
+
+        withdrawal_total = c.execute("""
+            SELECT COALESCE(SUM(amount_usd),0)
+            FROM withdrawal_requests WHERE user_id=? AND status='approved'
+        """, (uid,)).fetchone()[0]
+
+        withdrawal_pending = c.execute("""
+            SELECT COALESCE(SUM(amount_usd),0)
+            FROM withdrawal_requests WHERE user_id=? AND status='pending'
+        """, (uid,)).fetchone()[0]
+
+        ai_income = c.execute("""
+            SELECT COALESCE(SUM(amount_usd),0)
+            FROM machine_earnings WHERE user_id=?
+        """, (uid,)).fetchone()[0]
+
+        today_income = c.execute("""
+            SELECT COALESCE(SUM(me.amount_usd),0)
+            FROM machine_earnings me
+            JOIN machine_purchases mp ON mp.id=me.purchase_id
+            WHERE me.user_id=? AND me.earning_day=date('now')
+        """, (uid,)).fetchone()[0]
+
+        user = c.execute(
+            "SELECT balance,referral_code FROM users WHERE id=?", (uid,)
+        ).fetchone()
+
+        direct_count = c.execute("""
+            SELECT COUNT(*) FROM users
+            WHERE referred_by=?
+        """, (user["referral_code"],)).fetchone()[0]
+
+        team_count = c.execute("""
+            WITH RECURSIVE team(id,level) AS (
+                SELECT id,1 FROM users WHERE referred_by=?
+                UNION ALL
+                SELECT u.id,t.level+1 FROM users u JOIN team t
+                ON u.referred_by=(SELECT referral_code FROM users WHERE id=t.id)
+                WHERE t.level<3
+            )
+            SELECT COUNT(DISTINCT id) FROM team
+        """, (user["referral_code"],)).fetchone()[0]
+
+        team_income = c.execute("""
+            SELECT COALESCE(SUM(amount_usd),0)
+            FROM referral_commissions
+            WHERE beneficiary_user_id=? AND referral_level IN (1,2,3)
+        """, (uid,)).fetchone()[0]
+
+    return render_template("dashboard.html",
+        phone=session.get("phone",""),
+        deposit_total=deposits,
+        withdrawal_total=withdrawal_total,
+        withdrawal_pending=withdrawal_pending,
+        ai_income=ai_income,
+        today_income=today_income,
+        invite_count=direct_count,
+        team_count=team_count,
+        team_income=team_income,
+        balance=float(user["balance"] or 0))
 
 
 

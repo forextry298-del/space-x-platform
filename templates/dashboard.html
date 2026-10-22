@@ -161,23 +161,23 @@
 
   <section class="sx-stats">
     <a class="sx-stat" href="#deposit-details">
-      <strong>0.00 USD</strong><span>Deposit details</span>
+      <strong>{{ "%.2f"|format(deposit_total) }} USD</strong><span>Deposit details</span>
     </a>
     <a class="sx-stat" href="#withdraw-details">
-      <strong>0.00 USD</strong><span>Withdraw details</span>
+      <strong>{{ "%.2f"|format(withdrawal_total) }} USD</strong><span>Withdraw details</span>
     </a>
     <a class="sx-stat" href="#income">
-      <strong>0.00 USD</strong><span>AI Income</span>
+      <strong>{{ "%.2f"|format(ai_income) }} USD</strong><span>AI Income</span>
     </a>
     <a class="sx-stat" href="#income">
-      <strong>0.00 USD</strong><span>Today's earnings</span>
+      <strong>{{ "%.2f"|format(today_income) }} USD</strong><span>Today&#39;s earnings</span>
     </a>
   </section>
 
   <section class="sx-team-stats">
-    <div><strong>0</strong><span>Invite Count</span></div>
-    <div><strong>0</strong><span>Team Count</span></div>
-    <div><strong>0.00 USD</strong><span>Team income</span></div>
+    <div><strong>{{ invite_count }}</strong><span>Invite Count</span></div>
+    <div><strong>{{ team_count }}</strong><span>Team Count</span></div>
+    <div><strong>{{ "%.2f"|format(team_income) }} USD</strong><span>Team income</span></div>
   </section>
 
   <section class="sx-actions">
